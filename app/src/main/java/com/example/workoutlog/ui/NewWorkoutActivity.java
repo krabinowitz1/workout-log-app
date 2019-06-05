@@ -5,14 +5,17 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 
 import com.example.workoutlog.R;
 import com.example.workoutlog.databinding.ActivityNewWorkoutBinding;
 import com.example.workoutlog.model.Exercise;
+import com.example.workoutlog.model.Workout;
 
 import java.util.ArrayList;
 
@@ -68,6 +71,19 @@ public class NewWorkoutActivity extends AppCompatActivity implements SaveAsDialo
 
     @Override
     public void onSaveDialog(String inputText) {
-        ArrayList<Exercise> list = ((ExerciseAdapter) binding.exercisesList.getAdapter()).getExercises();
+        Intent replyIntent = new Intent();
+
+        if(TextUtils.isEmpty(inputText)) {
+            setResult(RESULT_CANCELED, replyIntent);
+        }
+
+        else {
+            ArrayList<Exercise> list = ((ExerciseAdapter) binding.exercisesList.getAdapter()).getExercises();
+            replyIntent.putParcelableArrayListExtra("exercises", (ArrayList) list);
+            replyIntent.putExtra("workout", inputText);
+            setResult(RESULT_OK, replyIntent);
+        }
+
+        finish();
     }
 }

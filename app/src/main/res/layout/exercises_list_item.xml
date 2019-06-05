@@ -55,24 +55,35 @@
                 </TableRow>
             </TableLayout>
 
-            <RelativeLayout
+            <LinearLayout
                 android:id="@+id/layout_add_set"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:background="#DAE8FC"
-                android:layout_below="@id/exercise_table">
+                android:layout_below="@+id/exercise_table"
+                android:orientation="horizontal">
                 <Button
                     android:id="@+id/btn_add_set"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="ADD"
+                    android:layout_marginRight="4dp"
                     android:layout_marginLeft="10dp"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:text="ADD SET"
-                    android:textColor="#A0A0A0"
                     />
-            </RelativeLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/delete"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="REMOVE"
+                    android:textColor="@color/colorAccent"
+                    android:layout_marginLeft="4dp"
+                    android:backgroundTintMode="@color/white"
+                    app:strokeColor="@color/colorAccent"
+                    app:strokeWidth="2dp"/>
+            </LinearLayout>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -83,7 +94,8 @@
                 android:layout_marginTop="8dp"
                 android:text="Exercise Parameters"
                 android:textColor="@color/colorAccent"
-                android:textSize="18sp"/>
+                android:textSize="18sp"
+                android:visibility="gone"/>
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
 </layout>
