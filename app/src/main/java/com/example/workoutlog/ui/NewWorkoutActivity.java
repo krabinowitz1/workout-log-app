@@ -18,7 +18,7 @@ import com.example.workoutlog.model.Exercise;
 import java.util.ArrayList;
 
 public class NewWorkoutActivity extends AppCompatActivity implements SaveAsDialogFragment.SaveAsDialogListener {
-    ActivityNewWorkoutBinding binding;
+    private ActivityNewWorkoutBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +59,7 @@ public class NewWorkoutActivity extends AppCompatActivity implements SaveAsDialo
     private void loadRecyclerView() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         binding.exercisesList.setLayoutManager(linearLayoutManager);
-        binding.exercisesList.setAdapter(new NewWorkoutAdapter(new ArrayList<Exercise>()));
+        binding.exercisesList.setAdapter(new WorkoutRoutineAdapter(new ArrayList<Exercise>()));
     }
 
     @Override
@@ -76,7 +76,7 @@ public class NewWorkoutActivity extends AppCompatActivity implements SaveAsDialo
         }
 
         else {
-            ArrayList<Exercise> list = ((NewWorkoutAdapter) binding.exercisesList.getAdapter()).getExercises();
+            ArrayList<Exercise> list = ((WorkoutRoutineAdapter) binding.exercisesList.getAdapter()).getExercises();
             replyIntent.putParcelableArrayListExtra("exercises", (ArrayList) list);
             replyIntent.putExtra("workout", inputText);
             setResult(RESULT_OK, replyIntent);

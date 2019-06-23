@@ -21,7 +21,7 @@ import com.example.workoutlog.model.Exercise;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NewWorkoutAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class WorkoutRoutineAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private ArrayList<Exercise> mExerciseList;
 
     private static final int TYPE_ITEM = 0;
@@ -31,7 +31,7 @@ public class NewWorkoutAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         void onUpdateExercise(String data, int position);
     }
 
-    NewWorkoutAdapter(ArrayList<Exercise> mExerciseList) {
+    WorkoutRoutineAdapter(ArrayList<Exercise> mExerciseList) {
         this.mExerciseList = mExerciseList;
     }
 

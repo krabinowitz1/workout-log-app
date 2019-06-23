@@ -2,7 +2,6 @@ package com.example.workoutlog.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,15 +26,14 @@ import java.util.List;
 import static android.app.Activity.RESULT_OK;
 
 public class WorkoutsFragment extends Fragment implements View.OnClickListener {
-    public static final int NEW_WORD_ACTIVITY_REQUEST_CODE = 1;
+    private static final int NEW_WORKOUT_ACTIVITY_REQUEST_CODE = 1;
+    private FragmentWorkoutsListBinding binding;
     private WorkoutViewModel mWorkoutViewModel;
-    private ExerciseViewModel mExerciseViewModel;
-    private List<Workout> mWorkouts;
 
     @Override
     public void onClick(View v) {
         Intent intent = new Intent(getActivity(), NewWorkoutActivity.class);
-        startActivityForResult(intent, NEW_WORD_ACTIVITY_REQUEST_CODE);
+        startActivityForResult(intent, NEW_WORKOUT_ACTIVITY_REQUEST_CODE);
     }
 
     @Override
@@ -47,48 +45,47 @@ public class WorkoutsFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        FragmentWorkoutsListBinding binding = FragmentWorkoutsListBinding.inflate(inflater, container, false);
+        binding = FragmentWorkoutsListBinding.inflate(inflater, container, false);
         binding.setListener(this);
+        loadRecyclerView();
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        return binding.getRoot();
+    }
+
+    private void loadRecyclerView() {
         final WorkoutsAdapter adapter = new WorkoutsAdapter();
         adapter.setOnItemClickListener(new WorkoutsAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                String workoutName = mWorkouts.get(position).getName();
+                String workoutName = adapter.getWorkouts().get(position).getName();
                 Intent intent = new Intent(getActivity(), StartWorkoutActivity.class);
                 intent.putExtra("workoutName", workoutName);
                 startActivity(intent);
             }
         });
-        binding.recWorkouts.setLayoutManager(linearLayoutManager);
-        binding.recWorkouts.setAdapter(adapter);
-        mWorkoutViewModel = ViewModelProviders.of(this).get(WorkoutViewModel.class);
 
+        binding.recWorkouts.setLayoutManager(new LinearLayoutManager(getActivity()));
+        binding.recWorkouts.setAdapter(adapter);
+
+        mWorkoutViewModel = ViewModelProviders.of(this).get(WorkoutViewModel.class);
         mWorkoutViewModel.getAllWorkouts().observe(this, new Observer<List<Workout>>() {
             @Override
             public void onChanged(List<Workout> workouts) {
-                for(Workout w : workouts)
-                    Log.d("DEBUG", w.getName());
                 adapter.setWorkouts(workouts);
-                mWorkouts = adapter.getWorkouts();
             }
         });
-
-        return binding.getRoot();
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == NEW_WORD_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
+        if(requestCode == NEW_WORKOUT_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
             ArrayList<Exercise> exercises = data.getParcelableArrayListExtra("exercises");
             Workout workout = new Workout(data.getStringExtra("workout"), exercises);
 
-            mExerciseViewModel = ViewModelProviders.of(this, new ExerciseViewModelFactory(getActivity().getApplication(), workout.getName())).get(ExerciseViewModel.class);
-            mExerciseViewModel.insertExerciseList(exercises);
-
+            ExerciseViewModel exerciseViewModel = ViewModelProviders.of(this, new ExerciseViewModelFactory(getActivity().getApplication(), workout.getName())).get(ExerciseViewModel.class);
+            exerciseViewModel.insertExerciseList(exercises);
 
             mWorkoutViewModel.insert(workout);
         }

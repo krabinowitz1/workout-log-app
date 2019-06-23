@@ -24,7 +24,7 @@ public class WorkoutRepository {
     }
 
     public Workout getWorkout(String name) {
-        return mWorkoutDao.getWorkoutWithExercises(name);
+        return mWorkoutDao.getWorkout(name);
     }
 
     public void insert(Workout workout) {

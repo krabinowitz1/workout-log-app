@@ -74,13 +74,13 @@ public class DynamicTableRow extends TableRow {
 
     public class MyEditTextListener implements TextWatcher {
         private int itemPosition;
-        private NewWorkoutAdapter.OnUpdateExerciseListener listener;
+        private WorkoutRoutineAdapter.OnUpdateExerciseListener listener;
 
         public void updatePosition(int itemPosition) {
             this.itemPosition = itemPosition;
         }
 
-        public void setListener(NewWorkoutAdapter.OnUpdateExerciseListener listener) {
+        public void setListener(WorkoutRoutineAdapter.OnUpdateExerciseListener listener) {
             this.listener = listener;
         }
 

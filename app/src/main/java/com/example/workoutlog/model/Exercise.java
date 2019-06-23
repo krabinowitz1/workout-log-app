@@ -22,7 +22,7 @@ public class Exercise implements Parcelable {
     @NonNull
     public String name;
 
-    public int sets = 0;
+    public int sets;
 
     @TypeConverters(MyTypeConverters.class)
     public ArrayList<String> reps = new ArrayList<>();
@@ -30,12 +30,17 @@ public class Exercise implements Parcelable {
     @TypeConverters(MyTypeConverters.class)
     public ArrayList<String> weights = new ArrayList<>();
 
+    @Ignore
+    public static final String EMPTY_FIELD = "";
+
+    @Ignore
+    public static final int MINIMUM_SETS = 1;
+
     public Exercise(String name) {
         this.name = name;
-
-        weights.add("");
-        reps.add("");
-        sets++;
+        weights.add(EMPTY_FIELD);
+        reps.add(EMPTY_FIELD);
+        sets = MINIMUM_SETS;
     }
 
     protected Exercise(Parcel in) {
