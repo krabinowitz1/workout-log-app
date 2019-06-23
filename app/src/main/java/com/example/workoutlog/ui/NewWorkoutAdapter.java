@@ -19,9 +19,11 @@ import com.example.workoutlog.databinding.ExercisesListItemBinding;
 import com.example.workoutlog.model.Exercise;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class ExerciseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class NewWorkoutAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private ArrayList<Exercise> mExerciseList;
+
     private static final int TYPE_ITEM = 0;
     private static final int TYPE_FOOTER = 1;
 
@@ -29,7 +31,7 @@ public class ExerciseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         void onUpdateExercise(String data, int position);
     }
 
-    ExerciseAdapter(ArrayList<Exercise> mExerciseList) {
+    NewWorkoutAdapter(ArrayList<Exercise> mExerciseList) {
         this.mExerciseList = mExerciseList;
     }
 
@@ -53,6 +55,12 @@ public class ExerciseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public ArrayList<Exercise> getExercises() {
         return mExerciseList;
+    }
+
+    public void setExercises(List<Exercise> exercises) {
+        mExerciseList = new ArrayList<>(exercises.size());
+        mExerciseList.addAll(exercises);
+        notifyDataSetChanged();
     }
 
     @Override
@@ -106,6 +114,7 @@ public class ExerciseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         TableLayout table;
         Button add;
         EditText name;
+
         public ItemViewHolder(ExercisesListItemBinding binding) {
             super(binding.getRoot());
             table = binding.exerciseTable;
@@ -132,6 +141,8 @@ public class ExerciseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     mExerciseList.get(getAdapterPosition()).name = s.toString();
                 }
             });
+
+            name.setText(mExerciseList.get(getAdapterPosition()).name);
         }
 
         private DynamicTableRow initDynamicTableRow(int i) {
@@ -157,8 +168,8 @@ public class ExerciseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             row.setRepsEditTextListener(l1);
             row.setWeightsEditTextListener(l2);
             row.init();
-            row.weightEditText.setText(mExerciseList.get(getAdapterPosition()).weights.get(i));
-            row.repsEditText.setText(mExerciseList.get(getAdapterPosition()).reps.get(i));
+            row.weightEditText.setHint(mExerciseList.get(getAdapterPosition()).weights.get(i));
+            row.repsEditText.setHint(mExerciseList.get(getAdapterPosition()).reps.get(i));
 
 
             return row;

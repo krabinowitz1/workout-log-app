@@ -40,7 +40,7 @@ public class WorkoutRepository {
 
         @Override
         protected Void doInBackground(final Workout... params) {
-            mAsyncTaskDao.insertWorkoutWithExercise(params[0]);
+            mAsyncTaskDao.insertWorkout(params[0]);
             return null;
         }
     }

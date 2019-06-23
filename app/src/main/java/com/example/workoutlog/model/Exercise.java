@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.TypeConverter;
 import androidx.room.TypeConverters;
 
@@ -17,14 +18,17 @@ import java.util.List;
 public class Exercise implements Parcelable {
     @NonNull
     public String workout;
+
     @NonNull
     public String name;
+
     public int sets = 0;
 
     @TypeConverters(MyTypeConverters.class)
-    public List<String> reps = new ArrayList<>();
+    public ArrayList<String> reps = new ArrayList<>();
+
     @TypeConverters(MyTypeConverters.class)
-    public List<String> weights = new ArrayList<>();
+    public ArrayList<String> weights = new ArrayList<>();
 
     public Exercise(String name) {
         this.name = name;

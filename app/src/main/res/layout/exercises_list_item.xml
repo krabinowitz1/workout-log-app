@@ -61,28 +61,29 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/exercise_table"
                 android:orientation="horizontal">
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_add_set"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="ADD"
+                    android:textColor="@color/colorAccent"
                     android:layout_marginRight="4dp"
                     android:layout_marginLeft="10dp"
                     />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/delete"
-                    style="@style/Widget.AppCompat.Button.Borderless"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="REMOVE"
                     android:textColor="@color/colorAccent"
                     android:layout_marginLeft="4dp"
-                    android:backgroundTintMode="@color/white"
-                    app:strokeColor="@color/colorAccent"
-                    app:strokeWidth="2dp"/>
+                    android:layout_marginRight="10dp"
+                    />
             </LinearLayout>
 
             <TextView

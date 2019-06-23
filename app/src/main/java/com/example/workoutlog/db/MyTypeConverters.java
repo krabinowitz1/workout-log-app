@@ -20,8 +20,8 @@ public class MyTypeConverters {
     }
 
     @TypeConverter
-    public static List<String> toList(String value) {
-        List<String> list = Arrays.asList(value.split("\\s*,\\s*"));
+    public static ArrayList<String> toList(String value) {
+        ArrayList<String> list = new ArrayList<>(Arrays.asList(value.split("\\s*,\\s*")));
         return list;
     }
 }

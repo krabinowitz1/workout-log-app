@@ -30,6 +30,7 @@ public abstract class WorkoutRoomDatabase extends RoomDatabase {
     }
 
     public abstract WorkoutDao workoutDao();
+    public abstract ExerciseDao exerciseDao();
 
     private static RoomDatabase.Callback sRoomDatabaseCallback =
             new RoomDatabase.Callback(){
@@ -43,15 +44,20 @@ public abstract class WorkoutRoomDatabase extends RoomDatabase {
 
     private static class PopulateDbAsync extends AsyncTask<Void, Void, Void> {
 
-        private final WorkoutDao mDao;
+        private final WorkoutDao mWorkoutDao;
+        private final ExerciseDao mExerciseDao;
 
         PopulateDbAsync(WorkoutRoomDatabase db) {
-            mDao = db.workoutDao();
+            mWorkoutDao = db.workoutDao();
+            mExerciseDao = db.exerciseDao();
         }
 
         @Override
         protected Void doInBackground(final Void... params) {
-            //mDao.deleteAll();
+            mWorkoutDao.deleteAll();
+            mWorkoutDao.insertWorkout(new Workout("Workout A"));
+            mWorkoutDao.insertWorkout(new Workout("Workout B"));
+            mWorkoutDao.insertWorkout(new Workout("Workout C"));
             return null;
         }
     }
