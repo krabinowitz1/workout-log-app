@@ -1,17 +1,32 @@
 package com.example.workoutlog.ui;
 
+import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.NumberPicker;
+import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TableLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import com.example.workoutlog.R;
 import com.example.workoutlog.databinding.ExerciseListFooterBinding;
@@ -23,15 +38,15 @@ import java.util.List;
 
 public class WorkoutRoutineAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private ArrayList<Exercise> mExerciseList;
-
+    private Context context;
     private static final int TYPE_ITEM = 0;
     private static final int TYPE_FOOTER = 1;
 
-    public interface OnUpdateExerciseListener {
-        void onUpdateExercise(String data, int position);
+    WorkoutRoutineAdapter(ArrayList<Exercise> mExerciseList) {
+        this.mExerciseList = mExerciseList;
     }
 
-    WorkoutRoutineAdapter(ArrayList<Exercise> mExerciseList) {
+    WorkoutRoutineAdapter(ArrayList<Exercise> mExerciseList, Context context) {
         this.mExerciseList = mExerciseList;
     }
 
@@ -44,6 +59,7 @@ public class WorkoutRoutineAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             ExercisesListItemBinding binding = DataBindingUtil.inflate(inflater, R.layout.exercises_list_item, parent, false);
             ItemViewHolder holder = new ItemViewHolder(binding);
             holder.add.setOnClickListener(holder);
+            holder.restTime.setOnClickListener(holder);
             return holder;
         }
 
@@ -114,12 +130,14 @@ public class WorkoutRoutineAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         TableLayout table;
         Button add;
         EditText name;
+        ImageView restTime;
 
         public ItemViewHolder(ExercisesListItemBinding binding) {
             super(binding.getRoot());
             table = binding.exerciseTable;
             add = binding.btnAddSet;
             name = binding.exerciseTitle;
+            restTime = binding.restTimeIcon;
             this.binding = binding;
         }
 
@@ -151,17 +169,18 @@ public class WorkoutRoutineAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             DynamicTableRow.MyEditTextListener l2 = row.new MyEditTextListener();
 
 
-            l1.setListener(new OnUpdateExerciseListener() {
+            l1.setListener(new DynamicTableRow.OnUpdateExerciseListener() {
                 @Override
                 public void onUpdateExercise(String data, int position) {
                     mExerciseList.get(getAdapterPosition()).reps.set(position, data);
                 }
             });
 
-            l2.setListener(new OnUpdateExerciseListener() {
+            l2.setListener(new DynamicTableRow.OnUpdateExerciseListener() {
                 @Override
                 public void onUpdateExercise(String data, int position) {
                     mExerciseList.get(getAdapterPosition()).weights.set(position, data);
+
                 }
             });
 
@@ -184,11 +203,40 @@ public class WorkoutRoutineAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         @Override
         public void onClick(View v) {
             switch(v.getId()) {
+
                 case R.id.btn_add_set:
                     mExerciseList.get(getAdapterPosition()).weights.add("");
                     mExerciseList.get(getAdapterPosition()).reps.add("");
                     mExerciseList.get(getAdapterPosition()).sets++;
                     table.addView(initDynamicTableRow(mExerciseList.get(getAdapterPosition()).sets - 1), new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT));
+                    break;
+
+                case R.id.rest_time_icon:
+                    Context context = binding.getRoot().getContext();
+                    LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    final float scale = context.getResources().getDisplayMetrics().density;
+                    int width = (int) (200 * scale + 0.5f);
+                    View layout = inflater.inflate(R.layout.popup_rest_time, null);
+                    PopupWindow popup = new PopupWindow(layout, width, ViewGroup.LayoutParams.WRAP_CONTENT, true);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        popup.showAsDropDown(restTime, 0, 0, Gravity.START);
+                    }
+
+                    NumberPicker numberPicker = layout.findViewById(R.id.number_picker);
+                    numberPicker.setMinValue(0);
+                    numberPicker.setMaxValue(19);
+
+                    /*
+                    AutoCompleteTextView tv = layout.findViewById(R.id.number_picker);
+                    final String[] COUNTRIES = new String[] {
+                            "Belgium", "France", "Italy", "Germany", "Spain"};
+                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_dropdown_item_1line, COUNTRIES);
+                    tv.setAdapter(adapter);
+                    */
+                    
+                    break;
+
+                case R.id.superset_icon:
             }
         }
     }

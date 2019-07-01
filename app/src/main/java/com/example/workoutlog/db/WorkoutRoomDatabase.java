@@ -13,7 +13,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import com.example.workoutlog.model.Exercise;
 import com.example.workoutlog.model.Workout;
 
-@Database(entities = {Workout.class, Exercise.class}, version = 1, exportSchema = false)
+@Database(entities = {Workout.class, Exercise.class}, version = 2, exportSchema = false)
 @TypeConverters({MyTypeConverters.class})
 public abstract class WorkoutRoomDatabase extends RoomDatabase {
     private static volatile WorkoutRoomDatabase INSTANCE;
@@ -22,7 +22,7 @@ public abstract class WorkoutRoomDatabase extends RoomDatabase {
         if(INSTANCE == null) {
             synchronized (WorkoutRoomDatabase.class) {
                 if(INSTANCE == null) {
-                    INSTANCE = Room.databaseBuilder(context.getApplicationContext(), WorkoutRoomDatabase.class, "workout_database").addCallback(sRoomDatabaseCallback).build();
+                    INSTANCE = Room.databaseBuilder(context.getApplicationContext(), WorkoutRoomDatabase.class, "workout_database").addCallback(sRoomDatabaseCallback).fallbackToDestructiveMigration().build();
                 }
             }
         }

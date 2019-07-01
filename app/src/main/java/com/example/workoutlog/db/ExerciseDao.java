@@ -19,6 +19,9 @@ public interface ExerciseDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insertExerciseList(List<Exercise> exerciseList);
 
-    @Query("SELECT * FROM exercise_table WHERE workout =:name")
+    @Query("SELECT * FROM exercise_table WHERE workoutName =:name")
     LiveData<List<Exercise>> getExerciseList(String name);
+
+    @Query("UPDATE exercise_table SET reps = :reps WHERE name =:name")
+    void update(List<String> reps, String name );
 }

@@ -18,6 +18,10 @@ public class DynamicTableRow extends TableRow {
     private MyEditTextListener weightsEditTextListener;
     private MyEditTextListener repsEditTextListener;
 
+    public interface OnUpdateExerciseListener {
+        void onUpdateExercise(String data, int position);
+    }
+
     public DynamicTableRow(Context context, int tableChildCount) {
         super(context);
         this.context = context;
@@ -73,14 +77,9 @@ public class DynamicTableRow extends TableRow {
     }
 
     public class MyEditTextListener implements TextWatcher {
-        private int itemPosition;
-        private WorkoutRoutineAdapter.OnUpdateExerciseListener listener;
+        private OnUpdateExerciseListener listener;
 
-        public void updatePosition(int itemPosition) {
-            this.itemPosition = itemPosition;
-        }
-
-        public void setListener(WorkoutRoutineAdapter.OnUpdateExerciseListener listener) {
+        public void setListener(OnUpdateExerciseListener listener) {
             this.listener = listener;
         }
 

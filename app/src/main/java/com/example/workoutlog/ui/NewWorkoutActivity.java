@@ -77,8 +77,8 @@ public class NewWorkoutActivity extends AppCompatActivity implements SaveAsDialo
 
         else {
             ArrayList<Exercise> list = ((WorkoutRoutineAdapter) binding.exercisesList.getAdapter()).getExercises();
-            replyIntent.putParcelableArrayListExtra("exercises", (ArrayList) list);
-            replyIntent.putExtra("workout", inputText);
+            replyIntent.putParcelableArrayListExtra("exercises", list);
+            replyIntent.putExtra("workoutName", inputText);
             setResult(RESULT_OK, replyIntent);
         }
 

@@ -6,45 +6,52 @@ import android.os.Parcelable;
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.Ignore;
-import androidx.room.TypeConverter;
+import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
 import com.example.workoutlog.db.MyTypeConverters;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.UUID;
 
-@Entity(primaryKeys = {"workout", "name"}, tableName = "exercise_table")
+@Entity(tableName = "exercise_table")
 public class Exercise implements Parcelable {
+    @PrimaryKey
     @NonNull
-    public String workout;
+    public String id;
 
-    @NonNull
+    public String workoutName;
+
     public String name;
 
     public int sets;
 
-    @TypeConverters(MyTypeConverters.class)
     public ArrayList<String> reps = new ArrayList<>();
 
-    @TypeConverters(MyTypeConverters.class)
     public ArrayList<String> weights = new ArrayList<>();
 
-    @Ignore
-    public static final String EMPTY_FIELD = "";
+    private static final transient String EMPTY_FIELD = "";
+
+    private static final transient int MINIMUM_SETS = 1;
 
     @Ignore
-    public static final int MINIMUM_SETS = 1;
-
     public Exercise(String name) {
-        this.name = name;
+        this(UUID.randomUUID().toString(), name);
         weights.add(EMPTY_FIELD);
         reps.add(EMPTY_FIELD);
         sets = MINIMUM_SETS;
     }
 
+
+    public Exercise(String id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+
     protected Exercise(Parcel in) {
-        workout = in.readString();
+        id = in.readString();
+        workoutName = in.readString();
         name = in.readString();
         sets = in.readInt();
         reps = in.createStringArrayList();
@@ -63,12 +70,20 @@ public class Exercise implements Parcelable {
         }
     };
 
-    public String getWorkout() {
-        return workout;
+    public String getId() {
+        return id;
     }
 
-    public void setWorkout(String workout) {
-        this.workout = workout;
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getWorkoutName() {
+        return workoutName;
+    }
+
+    public void setWorkoutName(String workoutName) {
+        this.workoutName = workoutName;
     }
 
     @Override
@@ -78,7 +93,8 @@ public class Exercise implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(workout);
+        dest.writeString(id);
+        dest.writeString(workoutName);
         dest.writeString(name);
         dest.writeInt(sets);
         dest.writeStringList(reps);

@@ -15,8 +15,47 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/exercise_title"
-                android:layout_margin="8dp"
-                android:hint="Exercise"/>
+                android:layout_marginHorizontal="8dp"
+                android:layout_marginBottom="8dp"
+                android:hint="Exercise"
+                android:layout_below="@id/icons"
+                android:layout_alignParentLeft="true" />
+
+            <LinearLayout
+                android:id="@+id/icons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_alignParentEnd="true"
+                android:gravity="end">
+
+                <ImageView
+                    android:id="@+id/rest_time_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_baseline_access_time_24px"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginHorizontal="8dp"
+                    />
+
+                <ImageView
+                    android:id="@+id/superset_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_baseline_repeat_24px"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginHorizontal="8dp"
+                    />
+
+                <ImageView
+                    android:id="@+id/more_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_baseline_more_vert_24px"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginHorizontal="8dp"
+                    />
+            </LinearLayout>
 
             <TableLayout
                 android:layout_width="match_parent"
@@ -54,49 +93,24 @@
 
                 </TableRow>
             </TableLayout>
-
             <LinearLayout
-                android:id="@+id/layout_add_set"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/exercise_table"
-                android:orientation="horizontal">
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_add_set"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="ADD"
-                    android:textColor="@color/colorAccent"
-                    android:layout_marginRight="4dp"
-                    android:layout_marginLeft="10dp"
-                    />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/delete"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="REMOVE"
-                    android:textColor="@color/colorAccent"
-                    android:layout_marginLeft="4dp"
-                    android:layout_marginRight="10dp"
-                    />
-            </LinearLayout>
-
-            <TextView
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_below="@id/exercise_table"
+                android:background="#DAE8FC"
+                >
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_add_set"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                app:strokeColor="#DAE8FC"
+                android:textColor="#A9A9A9"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/exercise_parameters"
-                android:layout_below="@id/layout_add_set"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="8dp"
-                android:text="Exercise Parameters"
-                android:textColor="@color/colorAccent"
-                android:textSize="18sp"
-                android:visibility="gone"/>
+                android:text="ADD SET" />
+            </LinearLayout>
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
 </layout>

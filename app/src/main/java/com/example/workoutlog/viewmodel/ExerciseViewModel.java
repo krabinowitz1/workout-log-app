@@ -31,7 +31,7 @@ public class ExerciseViewModel extends AndroidViewModel {
     public void insertExerciseList(List<Exercise> exerciseList) {
 
         for(Exercise e : exerciseList) {
-            e.workout = mParam;
+            e.workoutName = mParam;
         }
         mRepository.insertExerciseList(exerciseList);
     }

@@ -25,14 +25,13 @@ public class WorkoutsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public interface OnItemClickListener {
         void onItemClick(int position);
     }
+
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-
         WorkoutsListItemBinding binding = DataBindingUtil.inflate(inflater, R.layout.workouts_list_item, parent, false);
         ItemViewHolder holder = new ItemViewHolder(binding, mListener);
-
 
         return holder;
     }
