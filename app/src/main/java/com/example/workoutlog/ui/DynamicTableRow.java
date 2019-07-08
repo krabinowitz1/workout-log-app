@@ -14,20 +14,25 @@ public class DynamicTableRow extends TableRow {
     private Context context;
     public EditText repsEditText;
     public EditText weightEditText;
-    private int tableChildCount;
+    public int tableChildCount;
     private MyEditTextListener weightsEditTextListener;
     private MyEditTextListener repsEditTextListener;
+    private OnUpdateExerciseListener listener;
 
+    /*
     public interface OnUpdateExerciseListener {
         void onUpdateExercise(String data, int position);
     }
+    */
 
-    public DynamicTableRow(Context context, int tableChildCount) {
+    public DynamicTableRow(Context context, int tableChildCount, OnUpdateExerciseListener listener) {
         super(context);
         this.context = context;
         this.tableChildCount = tableChildCount;
+        this.listener = listener;
     }
 
+    /*
     public void setWeightsEditTextListener(MyEditTextListener listener) {
         weightsEditTextListener = listener;
     }
@@ -35,6 +40,7 @@ public class DynamicTableRow extends TableRow {
     public void setRepsEditTextListener(MyEditTextListener listener) {
         repsEditTextListener = listener;
     }
+    */
 
     private void setParams() {
         setLayoutParams(new TableRow.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, 1f));
@@ -65,12 +71,12 @@ public class DynamicTableRow extends TableRow {
         weightEditText = new EditText(context);
         weightEditText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         weightEditText.setLayoutParams(getLayoutParams());
-        weightEditText.addTextChangedListener(weightsEditTextListener);
+        //weightEditText.addTextChangedListener(weightsEditTextListener);
 
         repsEditText = new EditText(context);
         repsEditText.setLayoutParams(getLayoutParams());
         repsEditText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-        repsEditText.addTextChangedListener(repsEditTextListener);
+        //repsEditText.addTextChangedListener(repsEditTextListener);
 
         addView(repsEditText);
         addView(weightEditText);
@@ -84,17 +90,14 @@ public class DynamicTableRow extends TableRow {
         }
 
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        }
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
         @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-        }
+        public void onTextChanged(CharSequence s, int start, int before, int count) { }
 
         @Override
         public void afterTextChanged(Editable s) {
-            listener.onUpdateExercise(s.toString(), tableChildCount - 1);
+            //listener.onUpdateExercise(s.toString(), tableChildCount - 1);
         }
     }
 }

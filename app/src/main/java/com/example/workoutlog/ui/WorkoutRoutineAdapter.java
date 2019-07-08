@@ -8,11 +8,10 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -42,13 +41,12 @@ public class WorkoutRoutineAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private static final int TYPE_ITEM = 0;
     private static final int TYPE_FOOTER = 1;
 
+    private OnUpdateExerciseListener listener;
+
     WorkoutRoutineAdapter(ArrayList<Exercise> mExerciseList) {
         this.mExerciseList = mExerciseList;
     }
 
-    WorkoutRoutineAdapter(ArrayList<Exercise> mExerciseList, Context context) {
-        this.mExerciseList = mExerciseList;
-    }
 
     @NonNull
     @Override
@@ -60,6 +58,8 @@ public class WorkoutRoutineAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             ItemViewHolder holder = new ItemViewHolder(binding);
             holder.add.setOnClickListener(holder);
             holder.restTime.setOnClickListener(holder);
+            holder.superset.setOnClickListener(holder);
+
             return holder;
         }
 
@@ -77,6 +77,10 @@ public class WorkoutRoutineAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         mExerciseList = new ArrayList<>(exercises.size());
         mExerciseList.addAll(exercises);
         notifyDataSetChanged();
+    }
+
+    public void setOnUpdateExerciseListener(OnUpdateExerciseListener listener) {
+        this.listener = listener;
     }
 
     @Override
@@ -120,8 +124,9 @@ public class WorkoutRoutineAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         @Override
         public void onClick(View v) {
-            mExerciseList.add(new Exercise(""));
-            notifyItemInserted(getAdapterPosition());
+            //mExerciseList.add(new Exercise(""));
+            if(listener.addExercise())
+                notifyItemInserted(getAdapterPosition());
         }
     }
 
@@ -131,6 +136,7 @@ public class WorkoutRoutineAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         Button add;
         EditText name;
         ImageView restTime;
+        ImageView superset;
 
         public ItemViewHolder(ExercisesListItemBinding binding) {
             super(binding.getRoot());
@@ -138,6 +144,7 @@ public class WorkoutRoutineAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             add = binding.btnAddSet;
             name = binding.exerciseTitle;
             restTime = binding.restTimeIcon;
+            superset = binding.supersetIcon;
             this.binding = binding;
         }
 
@@ -145,18 +152,17 @@ public class WorkoutRoutineAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             addTableRows();
             name.addTextChangedListener(new TextWatcher() {
                 @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-                }
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
                 @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                }
+                public void onTextChanged(CharSequence s, int start, int before, int count) { }
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    mExerciseList.get(getAdapterPosition()).name = s.toString();
+                    //mExerciseList.get(getAdapterPosition()).name = s.toString();
+
+
+                    listener.setName(getAdapterPosition(), s.toString());
                 }
             });
 
@@ -164,10 +170,11 @@ public class WorkoutRoutineAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
 
         private DynamicTableRow initDynamicTableRow(int i) {
-            DynamicTableRow row = new DynamicTableRow(binding.getRoot().getContext(), table.getChildCount());
+            final DynamicTableRow row = new DynamicTableRow(binding.getRoot().getContext(), table.getChildCount(), listener);
+
+            /*
             DynamicTableRow.MyEditTextListener l1 = row.new MyEditTextListener();
             DynamicTableRow.MyEditTextListener l2 = row.new MyEditTextListener();
-
 
             l1.setListener(new DynamicTableRow.OnUpdateExerciseListener() {
                 @Override
@@ -184,9 +191,39 @@ public class WorkoutRoutineAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 }
             });
 
+
             row.setRepsEditTextListener(l1);
             row.setWeightsEditTextListener(l2);
+            */
+
             row.init();
+
+            row.weightEditText.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) { }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    listener.setWeight(getAdapterPosition(), row.tableChildCount - 1, s.toString());
+                }
+            });
+
+            row.repsEditText.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) { }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    listener.setReps(getAdapterPosition(), row.tableChildCount - 1, s.toString());
+                }
+            });
+
             row.weightEditText.setHint(mExerciseList.get(getAdapterPosition()).weights.get(i));
             row.repsEditText.setHint(mExerciseList.get(getAdapterPosition()).reps.get(i));
 
@@ -195,7 +232,8 @@ public class WorkoutRoutineAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
 
         private void addTableRows() {
-            for(int i = 0; i < mExerciseList.get(getAdapterPosition()).sets; i++) {
+            int numSets = mExerciseList.get(getAdapterPosition()).reps.size();
+            for(int i = 0; i < numSets; i++) {
                 table.addView(initDynamicTableRow(i), new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT));
             }
         }
@@ -205,9 +243,10 @@ public class WorkoutRoutineAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             switch(v.getId()) {
 
                 case R.id.btn_add_set:
-                    mExerciseList.get(getAdapterPosition()).weights.add("");
-                    mExerciseList.get(getAdapterPosition()).reps.add("");
-                    mExerciseList.get(getAdapterPosition()).sets++;
+                    listener.addSet(getAdapterPosition());
+                    //mExerciseList.get(getAdapterPosition()).weights.add("");
+                    //mExerciseList.get(getAdapterPosition()).reps.add("");
+                    //mExerciseList.get(getAdapterPosition()).sets++;
                     table.addView(initDynamicTableRow(mExerciseList.get(getAdapterPosition()).sets - 1), new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT));
                     break;
 
@@ -237,6 +276,9 @@ public class WorkoutRoutineAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                     break;
 
                 case R.id.superset_icon:
+                    listener.makeSuperset(getAdapterPosition());
+                    break;
+
             }
         }
     }

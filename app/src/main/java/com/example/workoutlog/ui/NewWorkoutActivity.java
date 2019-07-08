@@ -16,9 +16,11 @@ import com.example.workoutlog.databinding.ActivityNewWorkoutBinding;
 import com.example.workoutlog.model.Exercise;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class NewWorkoutActivity extends AppCompatActivity implements SaveAsDialogFragment.SaveAsDialogListener {
+public class NewWorkoutActivity extends AppCompatActivity implements SaveAsDialogFragment.SaveAsDialogListener, OnUpdateExerciseListener {
     private ActivityNewWorkoutBinding binding;
+    private ArrayList<Exercise> exercises = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +61,12 @@ public class NewWorkoutActivity extends AppCompatActivity implements SaveAsDialo
     private void loadRecyclerView() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         binding.exercisesList.setLayoutManager(linearLayoutManager);
-        binding.exercisesList.setAdapter(new WorkoutRoutineAdapter(new ArrayList<Exercise>()));
+        //binding.exercisesList.setAdapter(new WorkoutRoutineAdapter(new ArrayList<Exercise>()));
+
+
+        WorkoutRoutineAdapter adapter = new WorkoutRoutineAdapter(exercises);
+        adapter.setOnUpdateExerciseListener(NewWorkoutActivity.this);
+        binding.exercisesList.setAdapter(adapter);
     }
 
     @Override
@@ -77,11 +84,52 @@ public class NewWorkoutActivity extends AppCompatActivity implements SaveAsDialo
 
         else {
             ArrayList<Exercise> list = ((WorkoutRoutineAdapter) binding.exercisesList.getAdapter()).getExercises();
-            replyIntent.putParcelableArrayListExtra("exercises", list);
+            replyIntent.putParcelableArrayListExtra("exercises", exercises);
             replyIntent.putExtra("workoutName", inputText);
             setResult(RESULT_OK, replyIntent);
         }
 
         finish();
+    }
+
+    @Override
+    public void setName(int whichExercise, String data) {
+        exercises.get(whichExercise).name = data;
+    }
+
+    @Override
+    public void setReps(int whichExercise, int whichSet, String data) {
+        exercises.get(whichExercise).reps.set(whichSet, data);
+    }
+
+    @Override
+    public void setWeight(int whichExercise, int whichSet, String data) {
+        exercises.get(whichExercise).weights.set(whichSet, data);
+    }
+
+    @Override
+    public void setRestTime(int whichExercise, String data) {
+
+    }
+
+    @Override
+    public void makeSuperset(int whichExercise) {
+        FragmentManager fm = getSupportFragmentManager();
+        SupersetDialogFragment supersetDialog = new SupersetDialogFragment();
+        supersetDialog.show(fm, "fragment_superset");
+    }
+
+    @Override
+    public void addSet(int whichExercise) {
+        exercises.get(whichExercise).reps.add(" ");
+        exercises.get(whichExercise).weights.add(" ");
+        exercises.get(whichExercise).sets++;
+    }
+
+    @Override
+    public boolean addExercise() {
+        exercises.add(new Exercise(""));
+
+        return true;
     }
 }

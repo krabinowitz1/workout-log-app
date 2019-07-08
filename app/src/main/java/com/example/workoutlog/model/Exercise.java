@@ -30,7 +30,7 @@ public class Exercise implements Parcelable {
 
     public ArrayList<String> weights = new ArrayList<>();
 
-    private static final transient String EMPTY_FIELD = "";
+    private static final transient String EMPTY_FIELD = " ";
 
     private static final transient int MINIMUM_SETS = 1;
 

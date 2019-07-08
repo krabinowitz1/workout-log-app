@@ -8,6 +8,7 @@ import androidx.room.Query;
 
 import com.example.workoutlog.model.Exercise;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Dao
@@ -22,6 +23,12 @@ public interface ExerciseDao {
     @Query("SELECT * FROM exercise_table WHERE workoutName =:name")
     LiveData<List<Exercise>> getExerciseList(String name);
 
-    @Query("UPDATE exercise_table SET reps = :reps WHERE name =:name")
-    void update(List<String> reps, String name );
+    @Query("UPDATE exercise_table SET reps = :reps WHERE id =:id")
+    void updateRepsList(List<String> reps, String id );
+
+    @Query("UPDATE exercise_table SET weights = :weights WHERE id =:id")
+    void updateWeightList(List<String> weights, String id);
+
+    @Query("UPDATE exercise_table SET name = :name WHERE id =:id")
+    void updateName(String name, String id);
 }

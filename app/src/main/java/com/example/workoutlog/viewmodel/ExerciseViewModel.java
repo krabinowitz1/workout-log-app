@@ -28,11 +28,31 @@ public class ExerciseViewModel extends AndroidViewModel {
         return mExerciseList;
     }
 
+    public void insertExercise(Exercise exercise) {
+        mRepository.insertExercise(exercise);
+    }
+
     public void insertExerciseList(List<Exercise> exerciseList) {
 
         for(Exercise e : exerciseList) {
             e.workoutName = mParam;
         }
         mRepository.insertExerciseList(exerciseList);
+    }
+
+    public void addSet(Exercise exercise) {
+        mRepository.updateRepsAndWeightList(exercise.weights, exercise.reps, exercise.getId());
+    }
+
+    public void updateExerciseReps(Exercise exercise) {
+        mRepository.updateRepsList(exercise.reps, exercise.getId());
+    }
+
+    public void updateExerciseWeight(Exercise exercise) {
+        mRepository.updateWeightList(exercise.weights, exercise.getId());
+    }
+
+    public void updateExerciseName(Exercise exercise) {
+        mRepository.updateExerciseName(exercise.name, exercise.getId());
     }
 }
