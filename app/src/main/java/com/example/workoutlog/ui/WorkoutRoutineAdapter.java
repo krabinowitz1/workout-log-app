@@ -31,6 +31,7 @@ import com.example.workoutlog.R;
 import com.example.workoutlog.databinding.ExerciseListFooterBinding;
 import com.example.workoutlog.databinding.ExercisesListItemBinding;
 import com.example.workoutlog.model.Exercise;
+import com.example.workoutlog.model.ExerciseWithSets;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,9 +74,18 @@ public class WorkoutRoutineAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         return mExerciseList;
     }
 
-    public void setExercises(List<Exercise> exercises) {
+    public void setExercises(List<ExerciseWithSets> exercises) {
         mExerciseList = new ArrayList<>(exercises.size());
-        mExerciseList.addAll(exercises);
+        //mExerciseList.addAll(exercises);
+
+        for(ExerciseWithSets e : exercises) {
+            Exercise exercise = e.exercise;
+            Log.d("KEVIN", "EXERCISE: " + exercise.name);
+            exercise.exerciseSetList = e.exerciseSetList;
+            mExerciseList.add(exercise); // THIS IS THE LINE
+        }
+
+        Log.d("KEVIN", "NOTIFIED DATA SET CHANGED");
         notifyDataSetChanged();
     }
 
@@ -224,9 +234,11 @@ public class WorkoutRoutineAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 }
             });
 
-            row.weightEditText.setHint(mExerciseList.get(getAdapterPosition()).weights.get(i));
-            row.repsEditText.setHint(mExerciseList.get(getAdapterPosition()).reps.get(i));
+             row.weightEditText.setHint(mExerciseList.get(getAdapterPosition()).weights.get(i));
+             row.repsEditText.setHint(mExerciseList.get(getAdapterPosition()).reps.get(i));
 
+            //row.weightEditText.setHint(mExerciseList.get(getAdapterPosition()).exerciseSetList.get(i).weight);
+            //row.repsEditText.setHint(mExerciseList.get(getAdapterPosition()).exerciseSetList.get(i).reps);
 
             return row;
         }
@@ -247,7 +259,7 @@ public class WorkoutRoutineAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                     //mExerciseList.get(getAdapterPosition()).weights.add("");
                     //mExerciseList.get(getAdapterPosition()).reps.add("");
                     //mExerciseList.get(getAdapterPosition()).sets++;
-                    table.addView(initDynamicTableRow(mExerciseList.get(getAdapterPosition()).sets - 1), new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT));
+                    table.addView(initDynamicTableRow(mExerciseList.get(getAdapterPosition()).numSets - 1), new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT));
                     break;
 
                 case R.id.rest_time_icon:

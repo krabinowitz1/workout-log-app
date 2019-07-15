@@ -8,24 +8,26 @@ import androidx.lifecycle.LiveData;
 
 import com.example.workoutlog.db.ExerciseRepository;
 import com.example.workoutlog.model.Exercise;
+import com.example.workoutlog.model.ExerciseWithSets;
 
 import java.util.List;
 
 public class ExerciseViewModel extends AndroidViewModel {
 
     private ExerciseRepository mRepository;
-    private LiveData<List<Exercise>> mExerciseList;
+    private LiveData<List<ExerciseWithSets>> mExerciseWithSetList;
     private String mParam;
 
     public ExerciseViewModel(@NonNull Application application, String param) {
         super(application);
         mRepository = new ExerciseRepository(application, param);
-        mExerciseList = mRepository.getExerciseList();
+        mExerciseWithSetList = mRepository.getExerciseWithSetsList();
         mParam = param;
     }
 
-    public LiveData<List<Exercise>> getExerciseList() {
-        return mExerciseList;
+
+    public LiveData<List<ExerciseWithSets>> getExerciseWithSetList() {
+        return mExerciseWithSetList;
     }
 
     public void insertExercise(Exercise exercise) {
@@ -41,15 +43,7 @@ public class ExerciseViewModel extends AndroidViewModel {
     }
 
     public void addSet(Exercise exercise) {
-        mRepository.updateRepsAndWeightList(exercise.weights, exercise.reps, exercise.getId());
-    }
-
-    public void updateExerciseReps(Exercise exercise) {
-        mRepository.updateRepsList(exercise.reps, exercise.getId());
-    }
-
-    public void updateExerciseWeight(Exercise exercise) {
-        mRepository.updateWeightList(exercise.weights, exercise.getId());
+        mRepository.updateExercise(exercise);
     }
 
     public void updateExerciseName(Exercise exercise) {

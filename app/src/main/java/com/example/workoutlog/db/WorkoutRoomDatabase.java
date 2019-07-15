@@ -11,9 +11,10 @@ import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.example.workoutlog.model.Exercise;
+import com.example.workoutlog.model.ExerciseSet;
 import com.example.workoutlog.model.Workout;
 
-@Database(entities = {Workout.class, Exercise.class}, version = 2, exportSchema = false)
+@Database(entities = {Workout.class, Exercise.class, ExerciseSet.class}, version = 4, exportSchema = false)
 @TypeConverters({MyTypeConverters.class})
 public abstract class WorkoutRoomDatabase extends RoomDatabase {
     private static volatile WorkoutRoomDatabase INSTANCE;

@@ -12,19 +12,20 @@ import androidx.room.TypeConverters;
 import com.example.workoutlog.db.MyTypeConverters;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity(tableName = "exercise_table")
-public class Exercise implements Parcelable {
-    @PrimaryKey
+public class Exercise {
+    @PrimaryKey(autoGenerate = true)
     @NonNull
-    public String id;
+    public int id;
 
     public String workoutName;
 
     public String name;
 
-    public int sets;
+    public int numSets;
 
     public ArrayList<String> reps = new ArrayList<>();
 
@@ -35,20 +36,27 @@ public class Exercise implements Parcelable {
     private static final transient int MINIMUM_SETS = 1;
 
     @Ignore
+    public List<ExerciseSet> exerciseSetList;
+
     public Exercise(String name) {
-        this(UUID.randomUUID().toString(), name);
+        //this(UUID.randomUUID().toString(), name);
         weights.add(EMPTY_FIELD);
         reps.add(EMPTY_FIELD);
-        sets = MINIMUM_SETS;
-    }
-
-
-    public Exercise(String id, String name) {
-        this.id = id;
         this.name = name;
+        numSets = MINIMUM_SETS;
+        exerciseSetList = new ArrayList<>();
     }
 
+    /*
+    public Exercise(String name) {
+        //this.id = id;
+        this.name = name;
+        exerciseSetList = new ArrayList<>();
+    }
+    */
 
+
+    /*
     protected Exercise(Parcel in) {
         id = in.readString();
         workoutName = in.readString();
@@ -69,12 +77,13 @@ public class Exercise implements Parcelable {
             return new Exercise[size];
         }
     };
+    */
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -86,6 +95,7 @@ public class Exercise implements Parcelable {
         this.workoutName = workoutName;
     }
 
+    /*
     @Override
     public int describeContents() {
         return 0;
@@ -100,5 +110,6 @@ public class Exercise implements Parcelable {
         dest.writeStringList(reps);
         dest.writeStringList(weights);
     }
+    */
 }
 

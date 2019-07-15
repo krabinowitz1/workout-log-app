@@ -81,11 +81,11 @@ public class WorkoutsFragment extends Fragment implements View.OnClickListener {
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == NEW_WORKOUT_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
-            ArrayList<Exercise> exercises = data.getParcelableArrayListExtra("exercises");
-            Workout workout = new Workout(data.getStringExtra("workoutName"), exercises);
+            //ArrayList<Exercise> exercises = data.getParcelableArrayListExtra("exercises");
+            Workout workout = new Workout(data.getStringExtra("workoutName"));
 
-            ExerciseViewModel exerciseViewModel = ViewModelProviders.of(this, new ExerciseViewModelFactory(getActivity().getApplication(), workout.getName())).get(ExerciseViewModel.class);
-            exerciseViewModel.insertExerciseList(exercises);
+            // ExerciseViewModel exerciseViewModel = ViewModelProviders.of(this, new ExerciseViewModelFactory(getActivity().getApplication(), workout.getName())).get(ExerciseViewModel.class);
+            // exerciseViewModel.insertExerciseList(exercises);
 
             mWorkoutViewModel.insert(workout);
         }

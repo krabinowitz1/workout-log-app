@@ -3,6 +3,7 @@ package com.example.workoutlog.ui;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.content.Intent;
@@ -14,8 +15,12 @@ import android.view.View;
 import com.example.workoutlog.R;
 import com.example.workoutlog.databinding.ActivityNewWorkoutBinding;
 import com.example.workoutlog.model.Exercise;
+import com.example.workoutlog.model.ExerciseSet;
+import com.example.workoutlog.viewmodel.ExerciseViewModel;
+import com.example.workoutlog.viewmodel.ExerciseViewModelFactory;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class NewWorkoutActivity extends AppCompatActivity implements SaveAsDialogFragment.SaveAsDialogListener, OnUpdateExerciseListener {
@@ -84,9 +89,15 @@ public class NewWorkoutActivity extends AppCompatActivity implements SaveAsDialo
 
         else {
             ArrayList<Exercise> list = ((WorkoutRoutineAdapter) binding.exercisesList.getAdapter()).getExercises();
-            replyIntent.putParcelableArrayListExtra("exercises", exercises);
+            //replyIntent.putParcelableArrayListExtra("exercises", exercises);
             replyIntent.putExtra("workoutName", inputText);
             setResult(RESULT_OK, replyIntent);
+
+
+            ExerciseViewModel exerciseViewModel = ViewModelProviders.of(this,
+                    new ExerciseViewModelFactory(getApplication(), inputText)).get(ExerciseViewModel.class);
+
+            exerciseViewModel.insertExerciseList(exercises);
         }
 
         finish();
@@ -100,11 +111,17 @@ public class NewWorkoutActivity extends AppCompatActivity implements SaveAsDialo
     @Override
     public void setReps(int whichExercise, int whichSet, String data) {
         exercises.get(whichExercise).reps.set(whichSet, data);
+
+
+        exercises.get(whichExercise).exerciseSetList.get(whichSet).reps = data;
     }
 
     @Override
     public void setWeight(int whichExercise, int whichSet, String data) {
         exercises.get(whichExercise).weights.set(whichSet, data);
+
+
+        exercises.get(whichExercise).exerciseSetList.get(whichSet).weight = data;
     }
 
     @Override
@@ -123,12 +140,19 @@ public class NewWorkoutActivity extends AppCompatActivity implements SaveAsDialo
     public void addSet(int whichExercise) {
         exercises.get(whichExercise).reps.add(" ");
         exercises.get(whichExercise).weights.add(" ");
-        exercises.get(whichExercise).sets++;
+        exercises.get(whichExercise).numSets++;
+
+
+        exercises.get(whichExercise).exerciseSetList.add(new ExerciseSet(" ", " ", exercises.get(whichExercise).numSets));
     }
 
     @Override
     public boolean addExercise() {
-        exercises.add(new Exercise(""));
+        Exercise exercise = new Exercise("");
+        exercise.exerciseSetList.add(new ExerciseSet(" ", " ", exercise.numSets));
+
+
+        exercises.add(exercise);
 
         return true;
     }
