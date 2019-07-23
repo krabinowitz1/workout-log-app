@@ -14,13 +14,9 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.workoutlog.databinding.FragmentWorkoutsListBinding;
-import com.example.workoutlog.model.Exercise;
 import com.example.workoutlog.model.Workout;
-import com.example.workoutlog.viewmodel.ExerciseViewModel;
-import com.example.workoutlog.viewmodel.ExerciseViewModelFactory;
 import com.example.workoutlog.viewmodel.WorkoutViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
@@ -81,11 +77,7 @@ public class WorkoutsFragment extends Fragment implements View.OnClickListener {
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == NEW_WORKOUT_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
-            //ArrayList<Exercise> exercises = data.getParcelableArrayListExtra("exercises");
             Workout workout = new Workout(data.getStringExtra("workoutName"));
-
-            // ExerciseViewModel exerciseViewModel = ViewModelProviders.of(this, new ExerciseViewModelFactory(getActivity().getApplication(), workout.getName())).get(ExerciseViewModel.class);
-            // exerciseViewModel.insertExerciseList(exercises);
 
             mWorkoutViewModel.insert(workout);
         }

@@ -2,7 +2,6 @@ package com.example.workoutlog.db;
 
 import android.app.Application;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
@@ -11,16 +10,11 @@ import com.example.workoutlog.model.ExerciseSet;
 import com.example.workoutlog.model.ExerciseWithSets;
 
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 public class ExerciseRepository {
     private ExerciseDao mExerciseDao;
     private LiveData<List<Exercise>> mExerciseList;
     private LiveData<List<ExerciseWithSets>> mExerciseWithSetList;
-
-    public interface AsyncResponse {
-        void processFinish(List<ExerciseWithSets> output);
-    }
 
     public ExerciseRepository(Application application, String mParam) {
         WorkoutRoomDatabase db = WorkoutRoomDatabase.getDatabase(application);
@@ -41,33 +35,20 @@ public class ExerciseRepository {
         new insertExercisesAsyncTask(mExerciseDao).execute(exerciseList);
     }
 
-    public void updateRepsList(List<String> repsList, long id) {
-        new updateRepsAsyncTask(mExerciseDao, id).execute(repsList);
-    }
-
-    public void updateWeightList(List<String> weightList, long id) {
-        new updateWeightAsyncTask(mExerciseDao, id).execute(weightList);
+    public void insertExerciseSet(ExerciseSet exerciseSet) {
+        new insertExerciseSetTask(mExerciseDao).execute(exerciseSet);
     }
 
     public void updateExerciseName(String name, long id) {
-        new updateNameAsyncTask(mExerciseDao, id).execute(name);
+        new updateExerciseNameAsyncTask(mExerciseDao, id).execute(name);
     }
 
     public void updateExercise(Exercise exercise) {
-
+        new updateExerciseTask(mExerciseDao).execute(exercise);
     }
 
-    private static class updateExerciseTask extends AsyncTask<Exercise, Void, Void> {
-        private ExerciseDao mAsyncTaskDao;
-
-        updateExerciseTask(ExerciseDao dao) {
-            mAsyncTaskDao = dao;
-        }
-        @Override
-        protected Void doInBackground(Exercise... exercises) {
-            mAsyncTaskDao.updateExercise(exercises[0]);
-            return null;
-        }
+    public void updateExerciseSet(ExerciseSet exerciseSet) {
+        new updateExerciseSetTask(mExerciseDao).execute(exerciseSet);
     }
 
     private static class insertExerciseAsyncTask extends AsyncTask<Exercise, Void, Void> {
@@ -79,7 +60,14 @@ public class ExerciseRepository {
 
         @Override
         protected Void doInBackground(Exercise... exercises) {
-            mAsyncTaskDao.insertExercise(exercises[0]);
+            Exercise exercise = exercises[0];
+            long id = mAsyncTaskDao.insertExercise(exercise);
+
+            for(ExerciseSet eSet : exercise.exerciseSetList) {
+                eSet.exerciseId = id;
+                mAsyncTaskDao.insertExerciseSet(eSet);
+            }
+
             return null;
         }
     }
@@ -103,78 +91,65 @@ public class ExerciseRepository {
 
                 mAsyncTaskDao.insertExerciseSetList(e.exerciseSetList);
             }
-            // mAsyncTaskDao.insertExerciseList(lists[0]);
+
             return null;
         }
     }
 
-    /*
-    private static class getExercisesWithSetsAsyncTask extends AsyncTask<Void, Void, List<ExerciseWithSets>> {
+    private static class insertExerciseSetTask extends AsyncTask<ExerciseSet, Void, Void> {
         private ExerciseDao mAsyncTaskDao;
-        private String name;
-        private AsyncResponse asyncResponse;
 
-        getExercisesWithSetsAsyncTask(ExerciseDao dao, String name, AsyncResponse asyncResponse) {
+        insertExerciseSetTask(ExerciseDao dao) {
             mAsyncTaskDao = dao;
-            this.name = name;
-            this.asyncResponse = asyncResponse;
-        }
-        @Override
-        protected List<ExerciseWithSets> doInBackground(Void... voids) {
-            return mAsyncTaskDao.getExercisesWithSets(name);
         }
 
         @Override
-        protected void onPostExecute(List<ExerciseWithSets> exerciseWithSets) {
-            asyncResponse.processFinish(exerciseWithSets);
-        }
-    }
-
-*/
-    private static class updateRepsAsyncTask extends AsyncTask<List<String>, Void, Void> {
-        private ExerciseDao mAsyncTaskDao;
-        private long id;
-
-        updateRepsAsyncTask(ExerciseDao dao, long id) {
-            mAsyncTaskDao = dao;
-            this.id = id;
-        }
-
-        @Override
-        protected Void doInBackground(List<String>... lists) {
-            mAsyncTaskDao.updateRepsList(lists[0], id);
+        protected Void doInBackground(ExerciseSet... exerciseSets) {
+            mAsyncTaskDao.insertExerciseSet(exerciseSets[0]);
             return null;
         }
     }
 
-    private static class updateWeightAsyncTask extends AsyncTask<List<String>, Void, Void> {
+    private static class updateExerciseTask extends AsyncTask<Exercise, Void, Void> {
         private ExerciseDao mAsyncTaskDao;
-        private long id;
 
-        updateWeightAsyncTask(ExerciseDao dao, long id) {
+        updateExerciseTask(ExerciseDao dao) {
             mAsyncTaskDao = dao;
-            this.id = id;
         }
 
         @Override
-        protected Void doInBackground(List<String>... lists) {
-            mAsyncTaskDao.updateWeightList(lists[0], id);
+        protected Void doInBackground(Exercise... exercises) {
+            mAsyncTaskDao.updateExercise(exercises[0]);
             return null;
         }
     }
 
-    private static class updateNameAsyncTask extends AsyncTask<String, Void, Void> {
+    private static class updateExerciseSetTask extends AsyncTask<ExerciseSet, Void, Void> {
+        private ExerciseDao mAsyncTaskDao;
+
+        updateExerciseSetTask(ExerciseDao dao) {
+            mAsyncTaskDao = dao;
+        }
+
+        @Override
+        protected Void doInBackground(ExerciseSet... exerciseSets) {
+            mAsyncTaskDao.updateExerciseSet(exerciseSets[0]);
+            return null;
+        }
+    }
+
+    private static class updateExerciseNameAsyncTask extends AsyncTask<String, Void, Void> {
         private ExerciseDao mAsyncTaskDao;
         private long id;
 
-        updateNameAsyncTask(ExerciseDao dao, long id) {
+        updateExerciseNameAsyncTask(ExerciseDao dao, long id) {
             mAsyncTaskDao = dao;
             this.id = id;
         }
 
         @Override
         protected Void doInBackground(String... strings) {
-            mAsyncTaskDao.updateName(strings[0], id);
+            mAsyncTaskDao.updateExerciseName(strings[0], id);
             return null;
         }
     }

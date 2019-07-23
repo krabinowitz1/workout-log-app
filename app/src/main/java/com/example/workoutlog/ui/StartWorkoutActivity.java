@@ -1,9 +1,11 @@
 package com.example.workoutlog.ui;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
@@ -15,9 +17,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.workoutlog.R;
 import com.example.workoutlog.databinding.ActivityStartWorkoutBinding;
 import com.example.workoutlog.model.Exercise;
+import com.example.workoutlog.model.ExerciseSet;
 import com.example.workoutlog.model.ExerciseWithSets;
 import com.example.workoutlog.viewmodel.ExerciseViewModel;
-import com.example.workoutlog.viewmodel.ExerciseViewModelFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +48,8 @@ public class StartWorkoutActivity extends AppCompatActivity implements OnUpdateE
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_24px);
         workoutName = getIntent().getStringExtra("workoutName");
         getSupportActionBar().setTitle(workoutName);
+
+
         binding.activityStartWorkoutToolbar.setTitleTextColor(Color.WHITE);
         binding.activityStartWorkoutToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,96 +57,55 @@ public class StartWorkoutActivity extends AppCompatActivity implements OnUpdateE
                 finish();
             }
         });
+
+        binding.btnStart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(StartWorkoutActivity.this, DuringWorkoutActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private void loadRecyclerView() {
-        ArrayList<Exercise> exercisesList = new ArrayList<>();
-
-        final WorkoutRoutineAdapter adapter = new WorkoutRoutineAdapter(exercisesList);
-
+        final WorkoutRoutineAdapter adapter = new WorkoutRoutineAdapter(new ArrayList<Exercise>());
         adapter.setOnUpdateExerciseListener(StartWorkoutActivity.this);
 
 
         binding.startWorkoutExercisesList.setAdapter(adapter);
         binding.startWorkoutExercisesList.setLayoutManager(new LinearLayoutManager(this));
 
-        mExerciseViewModel = ViewModelProviders.of(this, new ExerciseViewModelFactory(getApplication(), workoutName)).get(ExerciseViewModel.class);
-
-//        mExerciseViewModel.getExerciseWithSet().observe(this, new Observer<ExerciseWithSets>() {
-//            @Override
-//            public void onChanged(ExerciseWithSets exerciseWithSets) {
-//                Log.d("KEVIN", "ON CHANGED");
-//
-//                ArrayList<Exercise> exercisesList = new ArrayList<>();
-//
-//                Exercise exercise = exerciseWithSets.exercise;
-//                exercise.exerciseSetList = exerciseWithSets.exerciseSetList;
-//
-//                exercisesList.add(exercise);
-//
-//                exercises = exercisesList;
-//
-//                if(shouldNotifyAdapter)
-//                    adapter.setExercises(exercisesList);
-//
-//
-//            }
-//        });
-
+        mExerciseViewModel = ViewModelProviders.of(this, new ExerciseViewModel.ExerciseViewModelFactory(getApplication(), workoutName)).get(ExerciseViewModel.class);
         mExerciseViewModel.getExerciseWithSetList().observe(this, new Observer<List<ExerciseWithSets>>() {
             @Override
             public void onChanged(List<ExerciseWithSets> exerciseWithSets) {
-                //ArrayList<Exercise> exercisesList = new ArrayList<>();
-
-                Log.d("KEVIN", "ON CHANGED CALLED");
-
-
-//                    adapter.setExercises(exercisesList);
-                    Log.d("KEVIN", "This method was called");
-
-
-//                for(ExerciseWithSets e : exerciseWithSets) {
-//                    Exercise exercise = e.exercise;
-//                    Log.d("KEVIN", "EXERCISE: " + exercise.name);
-//                    exercise.exerciseSetList = e.exerciseSetList;
-//                    //exercisesList.add(exercise); // THIS IS THE LINE
-//                }
-                if(shouldNotifyAdapter)
-                adapter.setExercises(exerciseWithSets);
+                if(shouldNotifyAdapter) {
+                    adapter.setExercises(exerciseWithSets);
+                }
 
                 exercises = adapter.getExercises();
-
-
             }
         });
-
-
-
-
-//        mExerciseViewModel.getExerciseList().observe(this, new Observer<List<Exercise>>() {
-//            @Override
-//            public void onChanged(List<Exercise> exerciseList) {
-//                if(shouldNotifyAdapter)
-//                    adapter.setExercises(exerciseList);
-//
-//                Log.d("KEVIN", "ON CHANGED BITCH");
-//                exercises = exerciseList;
-//
-//                //adapter.notifyDataSetChanged();
-//            }
-//        });
-
-
-
     }
 
     private void setShouldNotifyAdapter(boolean flag) {
         shouldNotifyAdapter = flag;
     }
 
+    private void closeKeyboard() {
+        View view = this.getCurrentFocus();
+
+        if(view != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            view.clearFocus();
+        }
+    }
+
     @Override
     public void setName(int whichExercise, String data) {
         setShouldNotifyAdapter(false);
+
 
         Exercise exercise = exercises.get(whichExercise);
         exercise.name = data;
@@ -153,23 +116,20 @@ public class StartWorkoutActivity extends AppCompatActivity implements OnUpdateE
     public void setReps(int whichExercise, int whichSet, String data) {
         setShouldNotifyAdapter(false);
 
-        Exercise exercise = exercises.get(whichExercise);
-        exercise.reps.set(whichSet, data);
-        //mExerciseViewModel.updateExerciseReps(exercise);
 
-        mExerciseViewModel.addSet(exercise);
+        Exercise exercise = exercises.get(whichExercise);
+        exercise.exerciseSetList.get(whichSet).reps = data;
+        mExerciseViewModel.updateExerciseSet(exercise.exerciseSetList.get(whichSet));
     }
 
     @Override
     public void setWeight(int whichExercise, int whichSet, String data) {
         setShouldNotifyAdapter(false);
 
+
         Exercise exercise = exercises.get(whichExercise);
-        exercise.weights.set(whichSet, data);
-        //mExerciseViewModel.updateExerciseWeight(exercise);
-
-        mExerciseViewModel.addSet(exercise);
-
+        exercise.exerciseSetList.get(whichSet).weight = data;
+        mExerciseViewModel.updateExerciseSet(exercise.exerciseSetList.get(whichSet));
     }
 
     @Override
@@ -179,28 +139,49 @@ public class StartWorkoutActivity extends AppCompatActivity implements OnUpdateE
 
     @Override
     public void makeSuperset(int whichExercise) {
+        ArrayList<String> exerciseNames = new ArrayList<>();
+        for(int i = 0; i < exercises.size(); i++) {
+            String s = exercises.get(i).name;
+            if(s.equals("") )
+                exerciseNames.add("unnamed exercise");
 
+            else
+                exerciseNames.add(s);
+        }
+        String currentExerciseName = exerciseNames.get(whichExercise);
+        exerciseNames.remove(whichExercise);
+        closeKeyboard();
+        FragmentManager fm = getSupportFragmentManager();
+        SupersetDialogFragment supersetDialog = SupersetDialogFragment.newInstance(currentExerciseName, exerciseNames);
+        supersetDialog.show(fm, "fragment_superset");
     }
 
     @Override
     public void addSet(int whichExercise) {
-
         setShouldNotifyAdapter(true);
 
+
         Exercise exercise = exercises.get(whichExercise);
-        exercise.reps.add(" ");
-        exercise.weights.add(" ");
         exercise.numSets++;
         mExerciseViewModel.addSet(exercise);
+
+
+        ExerciseSet exerciseSet = new ExerciseSet(" ", " ", exercise.numSets);
+        exerciseSet.exerciseId = exercise.getId();
+        exercise.exerciseSetList.add(exerciseSet);
+
+
+        mExerciseViewModel.insertExerciseSet(exerciseSet);
     }
 
     @Override
     public boolean addExercise() {
-
         setShouldNotifyAdapter(true);
+
 
         Exercise exercise = new Exercise("");
         exercise.workoutName = workoutName;
+        exercise.exerciseSetList.add(new ExerciseSet(" ", " ", exercise.numSets));
         mExerciseViewModel.insertExercise(exercise);
 
         return false;

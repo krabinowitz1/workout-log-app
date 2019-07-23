@@ -24,9 +24,8 @@ public interface ExerciseDao {
     @Insert
     void insertExerciseSetList(List<ExerciseSet> exerciseSetList);
 
-    @Transaction
-    @Query("SELECT * FROM exercise_table where workoutName =:name AND  name =:exerciseName")
-    LiveData<ExerciseWithSets> getExerciseWithSets(String name, String exerciseName);
+    @Insert
+    void insertExerciseSet(ExerciseSet exerciseSet);
 
     @Transaction
     @Query("SELECT * FROM exercise_table WHERE workoutName =:name")
@@ -35,15 +34,12 @@ public interface ExerciseDao {
     @Query("SELECT * FROM exercise_table WHERE workoutName =:name")
     LiveData<List<Exercise>> getExerciseList(String name);
 
-    @Query("UPDATE exercise_table SET reps = :reps WHERE id =:id")
-    void updateRepsList(List<String> reps, long id );
-
-    @Query("UPDATE exercise_table SET weights = :weights WHERE id =:id")
-    void updateWeightList(List<String> weights, long id);
-
     @Query("UPDATE exercise_table SET name = :name WHERE id =:id")
-    void updateName(String name, long id);
+    void updateExerciseName(String name, long id);
 
     @Update
     void updateExercise(Exercise exercise);
+
+    @Update
+    void updateExerciseSet(ExerciseSet exerciseSet);
 }

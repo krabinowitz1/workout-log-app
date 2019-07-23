@@ -2,8 +2,7 @@ package com.example.workoutlog.ui;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TableLayout;
@@ -15,32 +14,12 @@ public class DynamicTableRow extends TableRow {
     public EditText repsEditText;
     public EditText weightEditText;
     public int tableChildCount;
-    private MyEditTextListener weightsEditTextListener;
-    private MyEditTextListener repsEditTextListener;
-    private OnUpdateExerciseListener listener;
-
-    /*
-    public interface OnUpdateExerciseListener {
-        void onUpdateExercise(String data, int position);
-    }
-    */
 
     public DynamicTableRow(Context context, int tableChildCount, OnUpdateExerciseListener listener) {
         super(context);
         this.context = context;
         this.tableChildCount = tableChildCount;
-        this.listener = listener;
     }
-
-    /*
-    public void setWeightsEditTextListener(MyEditTextListener listener) {
-        weightsEditTextListener = listener;
-    }
-
-    public void setRepsEditTextListener(MyEditTextListener listener) {
-        repsEditTextListener = listener;
-    }
-    */
 
     private void setParams() {
         setLayoutParams(new TableRow.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, 1f));
@@ -71,33 +50,14 @@ public class DynamicTableRow extends TableRow {
         weightEditText = new EditText(context);
         weightEditText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         weightEditText.setLayoutParams(getLayoutParams());
-        //weightEditText.addTextChangedListener(weightsEditTextListener);
+        weightEditText.setSelectAllOnFocus(true);
 
         repsEditText = new EditText(context);
         repsEditText.setLayoutParams(getLayoutParams());
         repsEditText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-        //repsEditText.addTextChangedListener(repsEditTextListener);
+        repsEditText.setSelectAllOnFocus(true);
 
         addView(repsEditText);
         addView(weightEditText);
-    }
-
-    public class MyEditTextListener implements TextWatcher {
-        private OnUpdateExerciseListener listener;
-
-        public void setListener(OnUpdateExerciseListener listener) {
-            this.listener = listener;
-        }
-
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) { }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-            //listener.onUpdateExercise(s.toString(), tableChildCount - 1);
-        }
     }
 }

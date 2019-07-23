@@ -1,8 +1,6 @@
 package com.example.workoutlog.ui;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -31,6 +29,7 @@ import com.example.workoutlog.R;
 import com.example.workoutlog.databinding.ExerciseListFooterBinding;
 import com.example.workoutlog.databinding.ExercisesListItemBinding;
 import com.example.workoutlog.model.Exercise;
+import com.example.workoutlog.model.ExerciseSet;
 import com.example.workoutlog.model.ExerciseWithSets;
 
 import java.util.ArrayList;
@@ -38,7 +37,6 @@ import java.util.List;
 
 public class WorkoutRoutineAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private ArrayList<Exercise> mExerciseList;
-    private Context context;
     private static final int TYPE_ITEM = 0;
     private static final int TYPE_FOOTER = 1;
 
@@ -76,16 +74,13 @@ public class WorkoutRoutineAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     public void setExercises(List<ExerciseWithSets> exercises) {
         mExerciseList = new ArrayList<>(exercises.size());
-        //mExerciseList.addAll(exercises);
 
         for(ExerciseWithSets e : exercises) {
             Exercise exercise = e.exercise;
-            Log.d("KEVIN", "EXERCISE: " + exercise.name);
             exercise.exerciseSetList = e.exerciseSetList;
-            mExerciseList.add(exercise); // THIS IS THE LINE
+            mExerciseList.add(exercise);
         }
 
-        Log.d("KEVIN", "NOTIFIED DATA SET CHANGED");
         notifyDataSetChanged();
     }
 
@@ -134,7 +129,6 @@ public class WorkoutRoutineAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         @Override
         public void onClick(View v) {
-            //mExerciseList.add(new Exercise(""));
             if(listener.addExercise())
                 notifyItemInserted(getAdapterPosition());
         }
@@ -144,7 +138,7 @@ public class WorkoutRoutineAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         ExercisesListItemBinding binding;
         TableLayout table;
         Button add;
-        EditText name;
+        EditText exerciseName;
         ImageView restTime;
         ImageView superset;
 
@@ -152,7 +146,7 @@ public class WorkoutRoutineAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             super(binding.getRoot());
             table = binding.exerciseTable;
             add = binding.btnAddSet;
-            name = binding.exerciseTitle;
+            exerciseName = binding.exerciseTitle;
             restTime = binding.restTimeIcon;
             superset = binding.supersetIcon;
             this.binding = binding;
@@ -160,60 +154,27 @@ public class WorkoutRoutineAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         public void bind() {
             addTableRows();
-            name.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) { }
+
+            exerciseName.setText(mExerciseList.get(getAdapterPosition()).name);
+            exerciseName.setSelectAllOnFocus(true);
+            exerciseName.addTextChangedListener(new CondensedTextWatcher() {
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    //mExerciseList.get(getAdapterPosition()).name = s.toString();
-
-
                     listener.setName(getAdapterPosition(), s.toString());
                 }
             });
-
-            name.setText(mExerciseList.get(getAdapterPosition()).name);
         }
 
         private DynamicTableRow initDynamicTableRow(int i) {
             final DynamicTableRow row = new DynamicTableRow(binding.getRoot().getContext(), table.getChildCount(), listener);
-
-            /*
-            DynamicTableRow.MyEditTextListener l1 = row.new MyEditTextListener();
-            DynamicTableRow.MyEditTextListener l2 = row.new MyEditTextListener();
-
-            l1.setListener(new DynamicTableRow.OnUpdateExerciseListener() {
-                @Override
-                public void onUpdateExercise(String data, int position) {
-                    mExerciseList.get(getAdapterPosition()).reps.set(position, data);
-                }
-            });
-
-            l2.setListener(new DynamicTableRow.OnUpdateExerciseListener() {
-                @Override
-                public void onUpdateExercise(String data, int position) {
-                    mExerciseList.get(getAdapterPosition()).weights.set(position, data);
-
-                }
-            });
-
-
-            row.setRepsEditTextListener(l1);
-            row.setWeightsEditTextListener(l2);
-            */
-
             row.init();
 
-            row.weightEditText.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) { }
+            row.weightEditText.setText(mExerciseList.get(getAdapterPosition()).exerciseSetList.get(i).weight);
+            row.weightEditText.setSelectAllOnFocus(true);
+            row.weightEditText.addTextChangedListener(new CondensedTextWatcher() {
 
                 @Override
                 public void afterTextChanged(Editable s) {
@@ -221,12 +182,10 @@ public class WorkoutRoutineAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 }
             });
 
-            row.repsEditText.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) { }
+            row.repsEditText.setText(mExerciseList.get(getAdapterPosition()).exerciseSetList.get(i).reps);
+            row.repsEditText.setSelectAllOnFocus(true);
+            row.repsEditText.addTextChangedListener(new CondensedTextWatcher() {
 
                 @Override
                 public void afterTextChanged(Editable s) {
@@ -234,18 +193,12 @@ public class WorkoutRoutineAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 }
             });
 
-             row.weightEditText.setHint(mExerciseList.get(getAdapterPosition()).weights.get(i));
-             row.repsEditText.setHint(mExerciseList.get(getAdapterPosition()).reps.get(i));
-
-            //row.weightEditText.setHint(mExerciseList.get(getAdapterPosition()).exerciseSetList.get(i).weight);
-            //row.repsEditText.setHint(mExerciseList.get(getAdapterPosition()).exerciseSetList.get(i).reps);
 
             return row;
         }
 
         private void addTableRows() {
-            int numSets = mExerciseList.get(getAdapterPosition()).reps.size();
-            for(int i = 0; i < numSets; i++) {
+            for(int i = 0; i < mExerciseList.get(getAdapterPosition()).numSets; i++) {
                 table.addView(initDynamicTableRow(i), new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT));
             }
         }
@@ -256,9 +209,6 @@ public class WorkoutRoutineAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
                 case R.id.btn_add_set:
                     listener.addSet(getAdapterPosition());
-                    //mExerciseList.get(getAdapterPosition()).weights.add("");
-                    //mExerciseList.get(getAdapterPosition()).reps.add("");
-                    //mExerciseList.get(getAdapterPosition()).sets++;
                     table.addView(initDynamicTableRow(mExerciseList.get(getAdapterPosition()).numSets - 1), new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT));
                     break;
 
@@ -276,14 +226,6 @@ public class WorkoutRoutineAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                     NumberPicker numberPicker = layout.findViewById(R.id.number_picker);
                     numberPicker.setMinValue(0);
                     numberPicker.setMaxValue(19);
-
-                    /*
-                    AutoCompleteTextView tv = layout.findViewById(R.id.number_picker);
-                    final String[] COUNTRIES = new String[] {
-                            "Belgium", "France", "Italy", "Germany", "Spain"};
-                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_dropdown_item_1line, COUNTRIES);
-                    tv.setAdapter(adapter);
-                    */
                     
                     break;
 

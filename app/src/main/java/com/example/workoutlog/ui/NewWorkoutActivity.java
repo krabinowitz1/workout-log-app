@@ -6,22 +6,21 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 import com.example.workoutlog.R;
 import com.example.workoutlog.databinding.ActivityNewWorkoutBinding;
 import com.example.workoutlog.model.Exercise;
 import com.example.workoutlog.model.ExerciseSet;
 import com.example.workoutlog.viewmodel.ExerciseViewModel;
-import com.example.workoutlog.viewmodel.ExerciseViewModelFactory;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 public class NewWorkoutActivity extends AppCompatActivity implements SaveAsDialogFragment.SaveAsDialogListener, OnUpdateExerciseListener {
     private ActivityNewWorkoutBinding binding;
@@ -66,12 +65,21 @@ public class NewWorkoutActivity extends AppCompatActivity implements SaveAsDialo
     private void loadRecyclerView() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         binding.exercisesList.setLayoutManager(linearLayoutManager);
-        //binding.exercisesList.setAdapter(new WorkoutRoutineAdapter(new ArrayList<Exercise>()));
 
 
         WorkoutRoutineAdapter adapter = new WorkoutRoutineAdapter(exercises);
         adapter.setOnUpdateExerciseListener(NewWorkoutActivity.this);
         binding.exercisesList.setAdapter(adapter);
+    }
+
+    private void closeKeyboard() {
+        View view = this.getCurrentFocus();
+
+        if(view != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            view.clearFocus();
+        }
     }
 
     @Override
@@ -88,15 +96,10 @@ public class NewWorkoutActivity extends AppCompatActivity implements SaveAsDialo
         }
 
         else {
-            ArrayList<Exercise> list = ((WorkoutRoutineAdapter) binding.exercisesList.getAdapter()).getExercises();
-            //replyIntent.putParcelableArrayListExtra("exercises", exercises);
-            replyIntent.putExtra("workoutName", inputText);
             setResult(RESULT_OK, replyIntent);
+            replyIntent.putExtra("workoutName", inputText);
 
-
-            ExerciseViewModel exerciseViewModel = ViewModelProviders.of(this,
-                    new ExerciseViewModelFactory(getApplication(), inputText)).get(ExerciseViewModel.class);
-
+            ExerciseViewModel exerciseViewModel = ViewModelProviders.of(this, new ExerciseViewModel.ExerciseViewModelFactory(getApplication(), inputText)).get(ExerciseViewModel.class);
             exerciseViewModel.insertExerciseList(exercises);
         }
 
@@ -110,17 +113,11 @@ public class NewWorkoutActivity extends AppCompatActivity implements SaveAsDialo
 
     @Override
     public void setReps(int whichExercise, int whichSet, String data) {
-        exercises.get(whichExercise).reps.set(whichSet, data);
-
-
         exercises.get(whichExercise).exerciseSetList.get(whichSet).reps = data;
     }
 
     @Override
     public void setWeight(int whichExercise, int whichSet, String data) {
-        exercises.get(whichExercise).weights.set(whichSet, data);
-
-
         exercises.get(whichExercise).exerciseSetList.get(whichSet).weight = data;
     }
 
@@ -131,18 +128,26 @@ public class NewWorkoutActivity extends AppCompatActivity implements SaveAsDialo
 
     @Override
     public void makeSuperset(int whichExercise) {
+        ArrayList<String> exerciseNames = new ArrayList<>();
+        for(int i = 0; i < exercises.size(); i++) {
+            String s = exercises.get(i).name;
+            if(s.equals("") )
+                exerciseNames.add("unnamed exercise");
+
+            else
+                exerciseNames.add(s);
+        }
+        String currentExerciseName = exerciseNames.get(whichExercise);
+        exerciseNames.remove(whichExercise);
+        closeKeyboard();
         FragmentManager fm = getSupportFragmentManager();
-        SupersetDialogFragment supersetDialog = new SupersetDialogFragment();
+        SupersetDialogFragment supersetDialog = SupersetDialogFragment.newInstance(currentExerciseName, exerciseNames);
         supersetDialog.show(fm, "fragment_superset");
     }
 
     @Override
     public void addSet(int whichExercise) {
-        exercises.get(whichExercise).reps.add(" ");
-        exercises.get(whichExercise).weights.add(" ");
         exercises.get(whichExercise).numSets++;
-
-
         exercises.get(whichExercise).exerciseSetList.add(new ExerciseSet(" ", " ", exercises.get(whichExercise).numSets));
     }
 

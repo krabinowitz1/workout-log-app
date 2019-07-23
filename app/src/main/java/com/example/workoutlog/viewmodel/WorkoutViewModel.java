@@ -1,6 +1,7 @@
 package com.example.workoutlog.viewmodel;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -30,6 +31,7 @@ public class WorkoutViewModel extends AndroidViewModel {
     }
 
     public void insert(Workout workout) {
+        Log.d("KEVIN", "INSERTING WORKOUT");
         mRepository.insert(workout);
     }
 }
