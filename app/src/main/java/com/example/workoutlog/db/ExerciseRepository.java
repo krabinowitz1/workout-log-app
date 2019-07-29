@@ -15,16 +15,22 @@ public class ExerciseRepository {
     private ExerciseDao mExerciseDao;
     private LiveData<List<Exercise>> mExerciseList;
     private LiveData<List<ExerciseWithSets>> mExerciseWithSetList;
+    private LiveData<Integer> mExerciseCount;
 
     public ExerciseRepository(Application application, String mParam) {
         WorkoutRoomDatabase db = WorkoutRoomDatabase.getDatabase(application);
         mExerciseDao = db.exerciseDao();
         mExerciseList = mExerciseDao.getExerciseList(mParam);
         mExerciseWithSetList = mExerciseDao.getExercisesWithSets(mParam);
+        mExerciseCount = mExerciseDao.getExerciseCount(mParam);
     }
 
     public LiveData<List<ExerciseWithSets>> getExerciseWithSetsList() {
         return mExerciseWithSetList;
+    }
+
+    public LiveData<Integer> getExerciseCount() {
+        return mExerciseCount;
     }
 
     public void insertExercise(Exercise exercise) {

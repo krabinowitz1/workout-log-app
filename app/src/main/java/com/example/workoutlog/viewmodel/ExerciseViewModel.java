@@ -19,18 +19,24 @@ public class ExerciseViewModel extends AndroidViewModel {
 
     private ExerciseRepository mRepository;
     private LiveData<List<ExerciseWithSets>> mExerciseWithSetList;
+    private LiveData<Integer> mExerciseCount;
     private String mParam;
 
     public ExerciseViewModel(@NonNull Application application, String param) {
         super(application);
         mRepository = new ExerciseRepository(application, param);
         mExerciseWithSetList = mRepository.getExerciseWithSetsList();
+        mExerciseCount = mRepository.getExerciseCount();
         mParam = param;
     }
 
 
     public LiveData<List<ExerciseWithSets>> getExerciseWithSetList() {
         return mExerciseWithSetList;
+    }
+
+    public LiveData<Integer> getExerciseCount() {
+        return mExerciseCount;
     }
 
     public void insertExercise(Exercise exercise) {

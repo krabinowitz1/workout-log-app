@@ -37,6 +37,9 @@ public interface ExerciseDao {
     @Query("UPDATE exercise_table SET name = :name WHERE id =:id")
     void updateExerciseName(String name, long id);
 
+    @Query("Select COUNT(*) FROM exercise_table WHERE workoutName =:name")
+    LiveData<Integer> getExerciseCount(String name);
+
     @Update
     void updateExercise(Exercise exercise);
 

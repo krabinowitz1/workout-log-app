@@ -49,7 +49,6 @@ public class StartWorkoutActivity extends AppCompatActivity implements OnUpdateE
         workoutName = getIntent().getStringExtra("workoutName");
         getSupportActionBar().setTitle(workoutName);
 
-
         binding.activityStartWorkoutToolbar.setTitleTextColor(Color.WHITE);
         binding.activityStartWorkoutToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,6 +61,7 @@ public class StartWorkoutActivity extends AppCompatActivity implements OnUpdateE
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(StartWorkoutActivity.this, DuringWorkoutActivity.class);
+                intent.putExtra("workoutName", workoutName);
                 startActivity(intent);
             }
         });
@@ -70,7 +70,6 @@ public class StartWorkoutActivity extends AppCompatActivity implements OnUpdateE
     private void loadRecyclerView() {
         final WorkoutRoutineAdapter adapter = new WorkoutRoutineAdapter(new ArrayList<Exercise>());
         adapter.setOnUpdateExerciseListener(StartWorkoutActivity.this);
-
 
         binding.startWorkoutExercisesList.setAdapter(adapter);
         binding.startWorkoutExercisesList.setLayoutManager(new LinearLayoutManager(this));
@@ -106,7 +105,6 @@ public class StartWorkoutActivity extends AppCompatActivity implements OnUpdateE
     public void setName(int whichExercise, String data) {
         setShouldNotifyAdapter(false);
 
-
         Exercise exercise = exercises.get(whichExercise);
         exercise.name = data;
         mExerciseViewModel.updateExerciseName(exercise);
@@ -116,7 +114,6 @@ public class StartWorkoutActivity extends AppCompatActivity implements OnUpdateE
     public void setReps(int whichExercise, int whichSet, String data) {
         setShouldNotifyAdapter(false);
 
-
         Exercise exercise = exercises.get(whichExercise);
         exercise.exerciseSetList.get(whichSet).reps = data;
         mExerciseViewModel.updateExerciseSet(exercise.exerciseSetList.get(whichSet));
@@ -125,7 +122,6 @@ public class StartWorkoutActivity extends AppCompatActivity implements OnUpdateE
     @Override
     public void setWeight(int whichExercise, int whichSet, String data) {
         setShouldNotifyAdapter(false);
-
 
         Exercise exercise = exercises.get(whichExercise);
         exercise.exerciseSetList.get(whichSet).weight = data;
@@ -160,16 +156,13 @@ public class StartWorkoutActivity extends AppCompatActivity implements OnUpdateE
     public void addSet(int whichExercise) {
         setShouldNotifyAdapter(true);
 
-
         Exercise exercise = exercises.get(whichExercise);
         exercise.numSets++;
         mExerciseViewModel.addSet(exercise);
 
-
         ExerciseSet exerciseSet = new ExerciseSet(" ", " ", exercise.numSets);
         exerciseSet.exerciseId = exercise.getId();
         exercise.exerciseSetList.add(exerciseSet);
-
 
         mExerciseViewModel.insertExerciseSet(exerciseSet);
     }
@@ -177,7 +170,6 @@ public class StartWorkoutActivity extends AppCompatActivity implements OnUpdateE
     @Override
     public boolean addExercise() {
         setShouldNotifyAdapter(true);
-
 
         Exercise exercise = new Exercise("");
         exercise.workoutName = workoutName;

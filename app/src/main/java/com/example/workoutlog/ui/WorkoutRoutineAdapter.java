@@ -90,10 +90,13 @@ public class WorkoutRoutineAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        long startTime = System.currentTimeMillis();
         if(holder.getItemViewType() == TYPE_ITEM) {
             ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
             itemViewHolder.bind();
         }
+        Log.i("Kevin", "position " + position);
+        Log.i("KEVIN", "bindView time: " + (System.currentTimeMillis() - startTime));
     }
 
     @Override
