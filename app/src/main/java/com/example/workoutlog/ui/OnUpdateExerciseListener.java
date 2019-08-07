@@ -11,7 +11,7 @@ public interface OnUpdateExerciseListener {
 
     void makeSuperset(int whichExercise);
 
-    void addSet(int whichExercise);
+    void addSet(int whichExercise, int position);
 
-    boolean addExercise();
+    boolean addExercise(int position);
 }

@@ -62,10 +62,11 @@ public class ExerciseFragment extends Fragment {
 
     private void addTableRows() {
         for(int i = 0; i < mExerciseWithSets.exercise.numSets; i++) {
-            mBinding.exerciseTable.addView(initDynamicTableRow(i), new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT));
+            //mBinding.exerciseTable.addView(initDynamicTableRow(i), new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT));
         }
     }
 
+    /*
     private DynamicTableRow initDynamicTableRow(int i) {
         final DynamicTableRow row = new DynamicTableRow(mBinding.getRoot().getContext(), mBinding.exerciseTable.getChildCount(), null);
         row.init();
@@ -92,4 +93,5 @@ public class ExerciseFragment extends Fragment {
 
         return row;
     }
+    */
 }

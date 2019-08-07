@@ -68,11 +68,13 @@ public class StartWorkoutActivity extends AppCompatActivity implements OnUpdateE
     }
 
     private void loadRecyclerView() {
-        final WorkoutRoutineAdapter adapter = new WorkoutRoutineAdapter(new ArrayList<Exercise>());
+        final WorkoutRoutineAdapter adapter = new WorkoutRoutineAdapter(new ArrayList<Exercise>(), this);
         adapter.setOnUpdateExerciseListener(StartWorkoutActivity.this);
 
+        binding.startWorkoutExercisesList.setNestedScrollingEnabled(false);
         binding.startWorkoutExercisesList.setAdapter(adapter);
         binding.startWorkoutExercisesList.setLayoutManager(new LinearLayoutManager(this));
+        binding.startWorkoutExercisesList.setHasFixedSize(true);
 
         mExerciseViewModel = ViewModelProviders.of(this, new ExerciseViewModel.ExerciseViewModelFactory(getApplication(), workoutName)).get(ExerciseViewModel.class);
         mExerciseViewModel.getExerciseWithSetList().observe(this, new Observer<List<ExerciseWithSets>>() {
@@ -80,6 +82,7 @@ public class StartWorkoutActivity extends AppCompatActivity implements OnUpdateE
             public void onChanged(List<ExerciseWithSets> exerciseWithSets) {
                 if(shouldNotifyAdapter) {
                     adapter.setExercises(exerciseWithSets);
+                    binding.startWorkoutExercisesList.setItemViewCacheSize(exerciseWithSets.size());
                 }
 
                 exercises = adapter.getExercises();
@@ -153,7 +156,7 @@ public class StartWorkoutActivity extends AppCompatActivity implements OnUpdateE
     }
 
     @Override
-    public void addSet(int whichExercise) {
+    public void addSet(int whichExercise, int position) {
         setShouldNotifyAdapter(true);
 
         Exercise exercise = exercises.get(whichExercise);
@@ -168,7 +171,7 @@ public class StartWorkoutActivity extends AppCompatActivity implements OnUpdateE
     }
 
     @Override
-    public boolean addExercise() {
+    public boolean addExercise(int position) {
         setShouldNotifyAdapter(true);
 
         Exercise exercise = new Exercise("");

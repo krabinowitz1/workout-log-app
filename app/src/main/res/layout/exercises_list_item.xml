@@ -61,11 +61,21 @@
                         />
                 </LinearLayout>
 
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rec_exercise_sets"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/exercise_title">
+
+                </androidx.recyclerview.widget.RecyclerView>
+                <!--
+
                 <ScrollView
                     android:layout_below="@id/exercise_title"
                     android:id="@+id/scroll"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:visibility="gone">
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -113,7 +123,7 @@
                             android:layout_marginLeft="10dp"
                             android:layout_marginRight="10dp"
                             android:layout_marginBottom="10dp"
-                            android:layout_below="@id/scroll"
+                            android:layout_below="@id/rec_exercise_sets"
                             android:background="#DAE8FC"
                             >
                             <com.google.android.material.button.MaterialButton
@@ -127,6 +137,26 @@
                         </LinearLayout>
                     </LinearLayout>
                 </ScrollView>
+                -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_below="@id/rec_exercise_sets"
+                    android:background="#DAE8FC"
+                    >
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn2_add_set"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    app:strokeColor="#DAE8FC"
+                    android:textColor="#A9A9A9"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ADD SET" />
+                </LinearLayout>
+
             </RelativeLayout>
         </androidx.cardview.widget.CardView>
     </RelativeLayout>

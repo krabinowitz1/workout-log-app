@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
@@ -25,6 +26,10 @@ import java.util.ArrayList;
 public class NewWorkoutActivity extends AppCompatActivity implements SaveAsDialogFragment.SaveAsDialogListener, OnUpdateExerciseListener {
     private ActivityNewWorkoutBinding binding;
     private ArrayList<Exercise> exercises = new ArrayList<>();
+
+    private ExerciseAdapter exerciseAdapter;
+    private ArrayList<Integer> mViewTypeList;
+    private ArrayList<Integer> mTopSectionPositions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,9 +72,17 @@ public class NewWorkoutActivity extends AppCompatActivity implements SaveAsDialo
         binding.exercisesList.setLayoutManager(linearLayoutManager);
 
 
-        WorkoutRoutineAdapter adapter = new WorkoutRoutineAdapter(exercises);
+        WorkoutRoutineAdapter adapter = new WorkoutRoutineAdapter(exercises, this);
         adapter.setOnUpdateExerciseListener(NewWorkoutActivity.this);
-        binding.exercisesList.setAdapter(adapter);
+        //binding.exercisesList.setAdapter(adapter);
+
+        mViewTypeList = new ArrayList<>();
+        mViewTypeList.add(ExerciseAdapter.FooterViewHolder.VIEW_TYPE);
+        mTopSectionPositions = new ArrayList<>();
+
+        exerciseAdapter = new ExerciseAdapter(mViewTypeList, this, mTopSectionPositions);
+        exerciseAdapter.setExercises(exercises);
+        binding.exercisesList.setAdapter(exerciseAdapter);
     }
 
     private void closeKeyboard() {
@@ -113,6 +126,7 @@ public class NewWorkoutActivity extends AppCompatActivity implements SaveAsDialo
 
     @Override
     public void setReps(int whichExercise, int whichSet, String data) {
+        Log.d("KEVIN", "Which exercise: " + whichExercise);
         exercises.get(whichExercise).exerciseSetList.get(whichSet).reps = data;
     }
 
@@ -146,19 +160,32 @@ public class NewWorkoutActivity extends AppCompatActivity implements SaveAsDialo
     }
 
     @Override
-    public void addSet(int whichExercise) {
+    public void addSet(int whichExercise, int position) {
         exercises.get(whichExercise).numSets++;
         exercises.get(whichExercise).exerciseSetList.add(new ExerciseSet(" ", " ", exercises.get(whichExercise).numSets));
+
+        for(int i = whichExercise + 1; i < mTopSectionPositions.size(); i++) {
+            mTopSectionPositions.set(i, mTopSectionPositions.get(i) + 1);
+        }
+
+        mViewTypeList.add(position, ExerciseAdapter.MiddleSectionViewHolder.VIEW_TYPE);
+        exerciseAdapter.notifyDataSetChanged();
+        binding.exercisesList.scrollToPosition(position + 1);
     }
 
     @Override
-    public boolean addExercise() {
+    public boolean addExercise(int position) {
         Exercise exercise = new Exercise("");
         exercise.exerciseSetList.add(new ExerciseSet(" ", " ", exercise.numSets));
 
-
         exercises.add(exercise);
+        mTopSectionPositions.add(position);
 
+        mViewTypeList.add(mViewTypeList.size() - 1, ExerciseAdapter.TopSectionViewHolder.VIEW_TYPE);
+        mViewTypeList.add(mViewTypeList.size() - 1, ExerciseAdapter.MiddleSectionViewHolder.VIEW_TYPE);
+        mViewTypeList.add(mViewTypeList.size() - 1, ExerciseAdapter.BottomSectionViewHolder.VIEW_TYPE);
+        exerciseAdapter.notifyDataSetChanged();
+        //binding.exercisesList.scrollToPosition(mViewTypeList.size() - 1);
         return true;
     }
 }
