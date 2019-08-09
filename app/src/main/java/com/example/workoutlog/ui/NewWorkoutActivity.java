@@ -71,11 +71,6 @@ public class NewWorkoutActivity extends AppCompatActivity implements SaveAsDialo
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         binding.exercisesList.setLayoutManager(linearLayoutManager);
 
-
-        WorkoutRoutineAdapter adapter = new WorkoutRoutineAdapter(exercises, this);
-        adapter.setOnUpdateExerciseListener(NewWorkoutActivity.this);
-        //binding.exercisesList.setAdapter(adapter);
-
         mViewTypeList = new ArrayList<>();
         mViewTypeList.add(ExerciseAdapter.FooterViewHolder.VIEW_TYPE);
         mTopSectionPositions = new ArrayList<>();
@@ -126,7 +121,6 @@ public class NewWorkoutActivity extends AppCompatActivity implements SaveAsDialo
 
     @Override
     public void setReps(int whichExercise, int whichSet, String data) {
-        Log.d("KEVIN", "Which exercise: " + whichExercise);
         exercises.get(whichExercise).exerciseSetList.get(whichSet).reps = data;
     }
 

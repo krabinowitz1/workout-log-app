@@ -3,6 +3,7 @@ package com.example.workoutlog.ui;
 import android.content.Context;
 import android.os.Build;
 import android.text.Editable;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -92,12 +93,12 @@ public class ExerciseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 mListener.setName(whichExercise, s.toString());
             }
         });
+        holder.exerciseName.addTextChangedListener(mHashMap.get(holder.exerciseName));
     }
 
     private void setMiddleSectionViewHolderAtPosition(MiddleSectionViewHolder holder, final int position) {
         final int whichExercise = (Collections.binarySearch(mTopSectionPositions, position) * -1) - 2 ;
         Exercise exercise = mExerciseList.get(whichExercise);
-
         holder.numSet.setText(String.valueOf(exercise.exerciseSetList.get(position - mTopSectionPositions.get(whichExercise) - 1).number));
 
         holder.reps.setText(String.valueOf(exercise.exerciseSetList.get(position - mTopSectionPositions.get(whichExercise) - 1).reps));
@@ -130,6 +131,10 @@ public class ExerciseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (holder.getItemViewType() == MiddleSectionViewHolder.VIEW_TYPE) {
             ((MiddleSectionViewHolder) holder).weight.removeTextChangedListener(mHashMap.get(((MiddleSectionViewHolder) holder).weight));
             ((MiddleSectionViewHolder) holder).reps.removeTextChangedListener(mHashMap.get(((MiddleSectionViewHolder) holder).reps));
+        }
+
+        if (holder.getItemViewType() == TopSectionViewHolder.VIEW_TYPE) {
+            ((TopSectionViewHolder) holder).exerciseName.removeTextChangedListener(mHashMap.get(((TopSectionViewHolder) holder).exerciseName));
         }
     }
 

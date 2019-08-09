@@ -1,33 +1,32 @@
 package com.example.workoutlog.ui;
 
 import android.os.Bundle;
-import android.text.Editable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.TableLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.workoutlog.R;
-import com.example.workoutlog.databinding.ExercisesListItemBinding;
+import com.example.workoutlog.databinding.FragmentExerciseBinding;
 import com.example.workoutlog.model.Exercise;
 import com.example.workoutlog.model.ExerciseWithSets;
 import com.example.workoutlog.viewmodel.ExerciseViewModel;
 
-import java.util.List;
+import java.util.ArrayList;
 
-public class ExerciseFragment extends Fragment {
-    private ExercisesListItemBinding mBinding;
+public class ExerciseFragment extends Fragment implements OnUpdateExerciseListener {
+    private FragmentExerciseBinding mBinding;
     private ExerciseViewModel mExerciseViewModel;
     private ExerciseWithSets mExerciseWithSets;
+
+    private ArrayList<Integer> mViewTypeList;
+    private ArrayList<Integer> mTopSectionPositions;
 
     public static ExerciseFragment newInstance(String data, int position) {
         ExerciseFragment exerciseFragment = new ExerciseFragment();
@@ -41,57 +40,78 @@ public class ExerciseFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mBinding = DataBindingUtil.inflate(inflater, R.layout.exercises_list_item, container, false);
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_exercise, container, false);
         String workoutName = getArguments().getString("workout_name");
         Integer position = getArguments().getInt("position");
         mExerciseViewModel = ViewModelProviders.of(getActivity(), new ExerciseViewModel.ExerciseViewModelFactory(getActivity().getApplication(), workoutName)).get(ExerciseViewModel.class);
         mExerciseWithSets = mExerciseViewModel.getExerciseWithSetList().getValue().get(position);
 
-        bindData();
+        loadRecyclerView();
 
         return mBinding.getRoot();
     }
 
-    private void bindData() {
-        mBinding.exerciseTitle.setKeyListener(null);
-        mBinding.exerciseTitle.setBackground(null);
-        mBinding.exerciseTitle.setText(mExerciseWithSets.exercise.name);
+    private void loadRecyclerView() {
+        mViewTypeList = new ArrayList<>();
+        mTopSectionPositions = new ArrayList<>();
+        fillListsWithData(mExerciseWithSets);
 
-        addTableRows();
+        Exercise exercise = mExerciseWithSets.exercise;
+        exercise.exerciseSetList = mExerciseWithSets.exerciseSetList;
+        ArrayList<Exercise> singleItemList = new ArrayList<>();
+        singleItemList.add(exercise);
+
+        ExerciseAdapter exerciseAdapter = new ExerciseAdapter(mViewTypeList, this, mTopSectionPositions);
+        exerciseAdapter.setExercises(singleItemList);
+
+        mBinding.duringWorkoutExerciseList.setLayoutManager(new LinearLayoutManager(getContext()));
+        mBinding.duringWorkoutExerciseList.setAdapter(exerciseAdapter);
     }
 
-    private void addTableRows() {
-        for(int i = 0; i < mExerciseWithSets.exercise.numSets; i++) {
-            //mBinding.exerciseTable.addView(initDynamicTableRow(i), new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT));
+    private void fillListsWithData(ExerciseWithSets exerciseWithSets) {
+
+        mViewTypeList.add(ExerciseAdapter.TopSectionViewHolder.VIEW_TYPE);
+
+        for (int j = 0; j < exerciseWithSets.exerciseSetList.size(); j++) {
+            mViewTypeList.add(ExerciseAdapter.MiddleSectionViewHolder.VIEW_TYPE);
         }
+
+        mViewTypeList.add(ExerciseAdapter.BottomSectionViewHolder.VIEW_TYPE);
+        mTopSectionPositions.add(0);
     }
 
-    /*
-    private DynamicTableRow initDynamicTableRow(int i) {
-        final DynamicTableRow row = new DynamicTableRow(mBinding.getRoot().getContext(), mBinding.exerciseTable.getChildCount(), null);
-        row.init();
+    @Override
+    public void setName(int whichExercise, String data) {
 
-        row.weightEditText.setText(mExerciseWithSets.exerciseSetList.get(i).weight);
-        row.weightEditText.setSelectAllOnFocus(true);
-        row.weightEditText.addTextChangedListener(new CondensedTextWatcher() {
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-
-        row.repsEditText.setText(mExerciseWithSets.exerciseSetList.get(i).reps);
-        row.repsEditText.setSelectAllOnFocus(true);
-        row.repsEditText.addTextChangedListener(new CondensedTextWatcher() {
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-
-        return row;
     }
-    */
+
+    @Override
+    public void setReps(int whichExercise, int whichSet, String data) {
+
+    }
+
+    @Override
+    public void setWeight(int whichExercise, int whichSet, String data) {
+
+    }
+
+    @Override
+    public void setRestTime(int whichExercise, String data) {
+
+    }
+
+    @Override
+    public void makeSuperset(int whichExercise) {
+
+    }
+
+    @Override
+    public void addSet(int whichExercise, int position) {
+
+    }
+
+    @Override
+    public boolean addExercise(int position) {
+        return false;
+    }
 }
