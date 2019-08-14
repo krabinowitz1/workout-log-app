@@ -22,10 +22,6 @@ public class WorkoutsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private List<Workout> workouts;
     private OnItemClickListener mListener;
 
-    public interface OnItemClickListener {
-        void onItemClick(int position);
-    }
-
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

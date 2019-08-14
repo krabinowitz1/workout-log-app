@@ -1,5 +1,6 @@
 package com.example.workoutlog.ui;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,14 +18,14 @@ import java.util.ArrayList;
 
 public class SimpleExerciseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private ArrayList<Exercise> mExercises;
-    private SimpleExerciseListAdapter.OnItemClickListener mListener;
+    private OnItemClickListener mListener;
+
+    private boolean mHasHighlightedRow;
+    private ItemViewHolder mItemViewHolder;
+    private int mItemClickedPosition;
 
     public SimpleExerciseListAdapter(ArrayList<Exercise> exercises) {
         mExercises = exercises;
-    }
-
-    public interface OnItemClickListener {
-        void onItemClick(int position);
     }
 
     @NonNull
@@ -33,13 +34,18 @@ public class SimpleExerciseListAdapter extends RecyclerView.Adapter<RecyclerView
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         SimpleExercisesListItemBinding binding = DataBindingUtil.inflate(inflater, R.layout.simple_exercises_list_item, parent, false);
         SimpleExerciseListAdapter.ItemViewHolder holder = new SimpleExerciseListAdapter.ItemViewHolder(binding, mListener);
+        if(!mHasHighlightedRow) {
+            mItemClickedPosition = 0;
+            mItemViewHolder = holder;
+            holder.binding.getRoot().setBackgroundColor(Color.parseColor("#fff9c0"));
+            mHasHighlightedRow = true;
+        }
         return holder;
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
         mListener = listener;
     }
-
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
@@ -56,11 +62,13 @@ public class SimpleExerciseListAdapter extends RecyclerView.Adapter<RecyclerView
             return 0;
     }
 
-    public static class ItemViewHolder extends RecyclerView.ViewHolder {
+    public class ItemViewHolder extends RecyclerView.ViewHolder {
         TextView name;
+        SimpleExercisesListItemBinding binding;
 
-        public ItemViewHolder(SimpleExercisesListItemBinding binding, final OnItemClickListener listener) {
+        public ItemViewHolder(final SimpleExercisesListItemBinding binding, final OnItemClickListener listener) {
             super(binding.getRoot());
+            this.binding = binding;
             name = binding.simpleExerciseName;
 
             binding.getRoot().setOnClickListener(new View.OnClickListener() {
@@ -69,6 +77,12 @@ public class SimpleExerciseListAdapter extends RecyclerView.Adapter<RecyclerView
                     if(listener != null) {
                         int position = getAdapterPosition();
                         if(position != RecyclerView.NO_POSITION) {
+                            if(position != mItemClickedPosition) {
+                                mItemViewHolder.binding.getRoot().setBackgroundColor(Color.WHITE);
+                                binding.getRoot().setBackgroundColor(Color.parseColor("#fff9c0"));
+                                mItemViewHolder = ItemViewHolder.this;
+                                mItemClickedPosition = position;
+                            }
                             listener.onItemClick(position);
                         }
                     }

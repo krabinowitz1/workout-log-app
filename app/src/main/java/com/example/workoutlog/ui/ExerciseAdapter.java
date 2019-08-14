@@ -36,6 +36,7 @@ public class ExerciseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private ArrayList<Integer> mTopSectionPositions;
     private ArrayList<Exercise> mExerciseList;
     private HashMap<EditText, CondensedTextWatcher> mHashMap;
+    private View.OnFocusChangeListener mOnFocusChangeListener;
 
 
     public ExerciseAdapter(ArrayList<Integer> viewTypeList, OnUpdateExerciseListener listener, ArrayList<Integer> topSectionPositions) {
@@ -138,6 +139,10 @@ public class ExerciseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
+    public void setListener(View.OnFocusChangeListener listener) {
+        mOnFocusChangeListener = listener;
+    }
+
     public void setExercises(ArrayList<Exercise> exercises) {
         mExerciseList = exercises;
     }
@@ -163,6 +168,7 @@ public class ExerciseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         TopSectionViewHolder(TopSectionExercisesListItemBinding binding) {
             super(binding.getRoot());
             exerciseName = binding.exerciseTitle;
+            exerciseName.setSelectAllOnFocus(true);
             context = binding.getRoot().getContext();
             restTimeIcon = binding.restTimeIcon;
             superSetIcon = binding.supersetIcon;
@@ -209,6 +215,10 @@ public class ExerciseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             numSet = binding.tvSetNumber;
             reps = binding.etRep;
             weight = binding.etWeight;
+            reps.setSelectAllOnFocus(true);
+            weight.setSelectAllOnFocus(true);
+            reps.setOnFocusChangeListener(mOnFocusChangeListener);
+            weight.setOnFocusChangeListener(mOnFocusChangeListener);
         }
     }
 

@@ -3,7 +3,7 @@
     <LinearLayout android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@drawable/background"
+        android:background="@color/white"
         android:layout_marginBottom="8dp"
         xmlns:android="http://schemas.android.com/apk/res/android">
 
@@ -22,6 +22,10 @@
             android:textColor="#A9A9A9"
             />
 
-
+        <View
+            android:id="@+id/bottom_section_bottom_border"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="#F1F1F1"/>
     </LinearLayout>
 </layout>

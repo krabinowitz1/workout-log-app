@@ -50,7 +50,7 @@ public class WorkoutsFragment extends Fragment implements View.OnClickListener {
 
     private void loadRecyclerView() {
         final WorkoutsAdapter adapter = new WorkoutsAdapter();
-        adapter.setOnItemClickListener(new WorkoutsAdapter.OnItemClickListener() {
+        adapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
                 String workoutName = adapter.getWorkouts().get(position).getName();

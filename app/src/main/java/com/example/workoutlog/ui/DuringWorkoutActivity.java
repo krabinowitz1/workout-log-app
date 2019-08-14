@@ -19,14 +19,16 @@ import com.example.workoutlog.databinding.ActivityDuringWorkoutBinding;
 import com.example.workoutlog.model.Exercise;
 import com.example.workoutlog.model.ExerciseWithSets;
 import com.example.workoutlog.viewmodel.ExerciseViewModel;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DuringWorkoutActivity extends AppCompatActivity {
+public class DuringWorkoutActivity extends AppCompatActivity implements View.OnFocusChangeListener {
     private ActivityDuringWorkoutBinding mBinding;
     private ExerciseViewModel mExerciseViewModel;
     private String workoutName;
+    private ExerciseFragmentPagerAdapter pagerAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -60,15 +62,15 @@ public class DuringWorkoutActivity extends AppCompatActivity {
     }
 
     private void loadViewPager() {
-        final ExerciseFragmentPagerAdapter adapter = new ExerciseFragmentPagerAdapter(getSupportFragmentManager(), workoutName);
-        mBinding.exerciseViewpager.setAdapter(adapter);
+        pagerAdapter = new ExerciseFragmentPagerAdapter(getSupportFragmentManager(), workoutName, this);
+        mBinding.exerciseViewpager.setAdapter(pagerAdapter);
 
         mExerciseViewModel = ViewModelProviders.of(this, new ExerciseViewModel.ExerciseViewModelFactory(getApplication(), workoutName)).get(ExerciseViewModel.class);
         mExerciseViewModel.getExerciseWithSetList().observe(this, new Observer<List<ExerciseWithSets>>() {
             @Override
             public void onChanged(List<ExerciseWithSets> exerciseWithSets) {
-                adapter.count = exerciseWithSets.size();
-                adapter.notifyDataSetChanged();
+                pagerAdapter.count = exerciseWithSets.size();
+                pagerAdapter.notifyDataSetChanged();
 
                 loadRecyclerView(exerciseWithSets);
             }
@@ -82,12 +84,19 @@ public class DuringWorkoutActivity extends AppCompatActivity {
             list.add(ews.exercise);
         }
         SimpleExerciseListAdapter adapter = new SimpleExerciseListAdapter(list);
-        adapter.setOnItemClickListener(new SimpleExerciseListAdapter.OnItemClickListener() {
+        adapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
+                mBinding.exerciseViewpager.setCurrentItem(position, true);
             }
         });
         mBinding.simpleExerciseList.setLayoutManager(new LinearLayoutManager(this));
         mBinding.simpleExerciseList.setAdapter(adapter);
+    }
+
+    @Override
+    public void onFocusChange(View v, boolean hasFocus) {
+        BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(mBinding.bottomSheet);
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
 }

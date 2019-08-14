@@ -4,7 +4,9 @@
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="#F1F1F1"
+        >
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -33,7 +35,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/activity_during_workout_toolbar"
-                android:layout_marginBottom="55dp"
+                android:layout_marginBottom="47dp"
                 android:visibility="visible"
                 >
 
@@ -41,13 +43,31 @@
         </RelativeLayout>
 
         <LinearLayout
-
+            android:id="@+id/bottom_sheet"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="300dp"
             android:background="@color/white"
             android:orientation="vertical"
             app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
             app:behavior_peekHeight="55dp">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height=".1dp"
+                android:background="#F1F1F1" />
+
+            <androidx.appcompat.widget.Toolbar
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:elevation="4dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="0/8 exercises completed"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="18sp"/>
+            </androidx.appcompat.widget.Toolbar>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/simple_exercise_list"

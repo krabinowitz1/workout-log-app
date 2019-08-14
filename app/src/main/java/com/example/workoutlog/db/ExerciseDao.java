@@ -40,6 +40,9 @@ public interface ExerciseDao {
     @Query("Select COUNT(*) FROM exercise_table WHERE workoutName =:name")
     LiveData<Integer> getExerciseCount(String name);
 
+    @Query("DELETE FROM exercise_table")
+    void deleteAll();
+
     @Update
     void updateExercise(Exercise exercise);
 

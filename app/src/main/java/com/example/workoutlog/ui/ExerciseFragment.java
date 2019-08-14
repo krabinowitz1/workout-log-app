@@ -28,8 +28,17 @@ public class ExerciseFragment extends Fragment implements OnUpdateExerciseListen
     private ArrayList<Integer> mViewTypeList;
     private ArrayList<Integer> mTopSectionPositions;
 
-    public static ExerciseFragment newInstance(String data, int position) {
+
+
+    private View.OnFocusChangeListener mListener;
+
+    public void setListener(View.OnFocusChangeListener listener) {
+        mListener = listener;
+    }
+
+    public static ExerciseFragment newInstance(String data, int position, View.OnFocusChangeListener listener) {
         ExerciseFragment exerciseFragment = new ExerciseFragment();
+        exerciseFragment.setListener(listener);
         Bundle args = new Bundle();
         args.putString("workout_name", data);
         args.putInt("position", position);
@@ -63,6 +72,9 @@ public class ExerciseFragment extends Fragment implements OnUpdateExerciseListen
 
         ExerciseAdapter exerciseAdapter = new ExerciseAdapter(mViewTypeList, this, mTopSectionPositions);
         exerciseAdapter.setExercises(singleItemList);
+
+
+        exerciseAdapter.setListener(mListener);
 
         mBinding.duringWorkoutExerciseList.setLayoutManager(new LinearLayoutManager(getContext()));
         mBinding.duringWorkoutExerciseList.setAdapter(exerciseAdapter);
