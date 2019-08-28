@@ -6,8 +6,12 @@ import android.os.AsyncTask;
 import androidx.lifecycle.LiveData;
 
 import com.example.workoutlog.model.Exercise;
+import com.example.workoutlog.model.ExercisePerformed;
+import com.example.workoutlog.model.ExercisePerformedDraft;
 import com.example.workoutlog.model.ExerciseSet;
+import com.example.workoutlog.model.ExerciseSetWithHint;
 import com.example.workoutlog.model.ExerciseWithSets;
+import com.example.workoutlog.model.ExerciseWithSetsAndHints;
 
 import java.util.List;
 
@@ -15,6 +19,7 @@ public class ExerciseRepository {
     private ExerciseDao mExerciseDao;
     private LiveData<List<Exercise>> mExerciseList;
     private LiveData<List<ExerciseWithSets>> mExerciseWithSetList;
+    private LiveData<List<ExerciseWithSetsAndHints>> mExerciseWithSetsAndHintsList;
     private LiveData<Integer> mExerciseCount;
 
     public ExerciseRepository(Application application, String mParam) {
@@ -22,11 +27,16 @@ public class ExerciseRepository {
         mExerciseDao = db.exerciseDao();
         mExerciseList = mExerciseDao.getExerciseList(mParam);
         mExerciseWithSetList = mExerciseDao.getExercisesWithSets(mParam);
+        mExerciseWithSetsAndHintsList = mExerciseDao.getExercisesWithSetsAndHints(mParam);
         mExerciseCount = mExerciseDao.getExerciseCount(mParam);
     }
 
     public LiveData<List<ExerciseWithSets>> getExerciseWithSetsList() {
         return mExerciseWithSetList;
+    }
+
+    public LiveData<List<ExerciseWithSetsAndHints>> getExerciseWithSetsAndHintsList() {
+        return mExerciseWithSetsAndHintsList;
     }
 
     public LiveData<Integer> getExerciseCount() {
@@ -35,6 +45,18 @@ public class ExerciseRepository {
 
     public void insertExercise(Exercise exercise) {
         new insertExerciseAsyncTask(mExerciseDao).execute(exercise);
+    }
+
+    public void insertExercisePerformed(ExercisePerformed exerciseLogEntry) {
+
+    }
+
+    public void insertExercisePerformedDraftList(List<ExercisePerformedDraft> exercisePerformedDraftList) {
+        new insertExercisePerformedDraftListAsyncTask(mExerciseDao).execute(exercisePerformedDraftList);
+    }
+
+    public void insertExercisePerformedList(ExercisePerformed exerciseLogEntryList) {
+
     }
 
     public void insertExerciseList(List<Exercise> exerciseList) {
@@ -72,6 +94,30 @@ public class ExerciseRepository {
             for(ExerciseSet eSet : exercise.exerciseSetList) {
                 eSet.exerciseId = id;
                 mAsyncTaskDao.insertExerciseSet(eSet);
+            }
+
+            return null;
+        }
+    }
+
+    private static class insertExercisePerformedDraftListAsyncTask extends AsyncTask<List<ExercisePerformedDraft>, Void, Void> {
+        private ExerciseDao mAsyncTaskDao;
+
+        insertExercisePerformedDraftListAsyncTask(ExerciseDao dao) {
+            mAsyncTaskDao = dao;
+        }
+
+        @Override
+        protected Void doInBackground(List<ExercisePerformedDraft>... exercisePerformedDrafts) {
+            List<ExercisePerformedDraft> list = exercisePerformedDrafts[0];
+
+            for(ExercisePerformedDraft epd : list) {
+                long id = mAsyncTaskDao.insertExercisePerformedDraft(epd);
+
+                for (ExerciseSetWithHint eswh : epd.exerciseSetWithHintList) {
+                    eswh.exerciseId = id;
+                }
+                mAsyncTaskDao.insertExerciseSetWithHintList(epd.exerciseSetWithHintList);
             }
 
             return null;

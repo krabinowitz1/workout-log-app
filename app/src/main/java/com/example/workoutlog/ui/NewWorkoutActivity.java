@@ -18,7 +18,9 @@ import android.view.inputmethod.InputMethodManager;
 import com.example.workoutlog.R;
 import com.example.workoutlog.databinding.ActivityNewWorkoutBinding;
 import com.example.workoutlog.model.Exercise;
+import com.example.workoutlog.model.ExercisePerformedDraft;
 import com.example.workoutlog.model.ExerciseSet;
+import com.example.workoutlog.model.ExerciseSetWithHint;
 import com.example.workoutlog.viewmodel.ExerciseViewModel;
 
 import java.util.ArrayList;
@@ -26,10 +28,14 @@ import java.util.ArrayList;
 public class NewWorkoutActivity extends AppCompatActivity implements SaveAsDialogFragment.SaveAsDialogListener, OnUpdateExerciseListener {
     private ActivityNewWorkoutBinding binding;
     private ArrayList<Exercise> exercises = new ArrayList<>();
+    private ArrayList<ExercisePerformedDraft> exercisePerformedDrafts = new ArrayList<>();
 
     private ExerciseAdapter exerciseAdapter;
     private ArrayList<Integer> mViewTypeList;
     private ArrayList<Integer> mTopSectionPositions;
+
+    private static final String EMPTY_FIELD = "";
+    private static final int MINIMUM_SETS = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +81,7 @@ public class NewWorkoutActivity extends AppCompatActivity implements SaveAsDialo
         mViewTypeList.add(ExerciseAdapter.FooterViewHolder.VIEW_TYPE);
         mTopSectionPositions = new ArrayList<>();
 
-        exerciseAdapter = new ExerciseAdapter(mViewTypeList, this, mTopSectionPositions);
+        exerciseAdapter = new ExerciseAdapter(mViewTypeList, this, mTopSectionPositions, NewWorkoutActivity.class.getSimpleName());
         exerciseAdapter.setExercises(exercises);
         binding.exercisesList.setAdapter(exerciseAdapter);
     }
@@ -109,6 +115,7 @@ public class NewWorkoutActivity extends AppCompatActivity implements SaveAsDialo
 
             ExerciseViewModel exerciseViewModel = ViewModelProviders.of(this, new ExerciseViewModel.ExerciseViewModelFactory(getApplication(), inputText)).get(ExerciseViewModel.class);
             exerciseViewModel.insertExerciseList(exercises);
+            exerciseViewModel.insertExercisePerformedDraftList(exercisePerformedDrafts);
         }
 
         finish();
@@ -117,16 +124,25 @@ public class NewWorkoutActivity extends AppCompatActivity implements SaveAsDialo
     @Override
     public void setName(int whichExercise, String data) {
         exercises.get(whichExercise).name = data;
+
+
+        exercisePerformedDrafts.get(whichExercise).name = data;
     }
 
     @Override
     public void setReps(int whichExercise, int whichSet, String data) {
         exercises.get(whichExercise).exerciseSetList.get(whichSet).reps = data;
+
+
+        exercisePerformedDrafts.get(whichExercise).exerciseSetWithHintList.get(whichSet).repsHint = data;
     }
 
     @Override
     public void setWeight(int whichExercise, int whichSet, String data) {
         exercises.get(whichExercise).exerciseSetList.get(whichSet).weight = data;
+
+
+        exercisePerformedDrafts.get(whichExercise).exerciseSetWithHintList.get(whichSet).weightHint = data;
     }
 
     @Override
@@ -158,6 +174,12 @@ public class NewWorkoutActivity extends AppCompatActivity implements SaveAsDialo
         exercises.get(whichExercise).numSets++;
         exercises.get(whichExercise).exerciseSetList.add(new ExerciseSet(" ", " ", exercises.get(whichExercise).numSets));
 
+
+        exercisePerformedDrafts.get(whichExercise).numSets++;
+        exercisePerformedDrafts.get(whichExercise).exerciseSetWithHintList.add(new ExerciseSetWithHint(EMPTY_FIELD, EMPTY_FIELD, exercises.get(whichExercise).numSets));
+        //exercises.get(whichExercise).exerciseSetWithHintList.add(new ExerciseSetWithHint(EMPTY_FIELD, EMPTY_FIELD, exercises.get(whichExercise).numSets));
+
+
         for(int i = whichExercise + 1; i < mTopSectionPositions.size(); i++) {
             mTopSectionPositions.set(i, mTopSectionPositions.get(i) + 1);
         }
@@ -169,8 +191,16 @@ public class NewWorkoutActivity extends AppCompatActivity implements SaveAsDialo
 
     @Override
     public boolean addExercise(int position) {
-        Exercise exercise = new Exercise("");
+        Exercise exercise = new Exercise(EMPTY_FIELD);
         exercise.exerciseSetList.add(new ExerciseSet(" ", " ", exercise.numSets));
+
+
+
+        ExercisePerformedDraft exercisePerformedDraft = new ExercisePerformedDraft(EMPTY_FIELD, MINIMUM_SETS);
+        exercisePerformedDraft.exerciseSetWithHintList.add(new ExerciseSetWithHint(EMPTY_FIELD, EMPTY_FIELD, exercise.numSets));
+        exercisePerformedDrafts.add(exercisePerformedDraft);
+        //exercise.exerciseSetWithHintList.add(new ExerciseSetWithHint(EMPTY_FIELD, EMPTY_FIELD, exercise.numSets));
+        
 
         exercises.add(exercise);
         mTopSectionPositions.add(position);

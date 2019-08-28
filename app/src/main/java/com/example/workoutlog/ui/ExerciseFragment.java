@@ -1,6 +1,8 @@
 package com.example.workoutlog.ui;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,31 +16,44 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.workoutlog.R;
 import com.example.workoutlog.databinding.FragmentExerciseBinding;
-import com.example.workoutlog.model.Exercise;
-import com.example.workoutlog.model.ExerciseWithSets;
+import com.example.workoutlog.model.ExercisePerformedDraft;
+import com.example.workoutlog.model.ExerciseWithSetsAndHints;
 import com.example.workoutlog.viewmodel.ExerciseViewModel;
 
 import java.util.ArrayList;
 
-public class ExerciseFragment extends Fragment implements OnUpdateExerciseListener {
+public class ExerciseFragment extends Fragment {
     private FragmentExerciseBinding mBinding;
     private ExerciseViewModel mExerciseViewModel;
-    private ExerciseWithSets mExerciseWithSets;
 
     private ArrayList<Integer> mViewTypeList;
     private ArrayList<Integer> mTopSectionPositions;
 
+    private View.OnFocusChangeListener mOnFocusChangeListener;
+    private OnUpdateExerciseListener mOnUpdateExerciseListener;
 
+    private ExerciseWithSetsAndHints mExerciseWithSetsAndHints;
 
-    private View.OnFocusChangeListener mListener;
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (context instanceof View.OnFocusChangeListener)
+            setOnFocusChangeListener((View.OnFocusChangeListener) context);
 
-    public void setListener(View.OnFocusChangeListener listener) {
-        mListener = listener;
+        if (context instanceof OnUpdateExerciseListener)
+            setOnUpdateExerciseListener((OnUpdateExerciseListener) context);
     }
 
-    public static ExerciseFragment newInstance(String data, int position, View.OnFocusChangeListener listener) {
+    private void setOnFocusChangeListener(View.OnFocusChangeListener listener) {
+        mOnFocusChangeListener = listener;
+    }
+
+    private void setOnUpdateExerciseListener(OnUpdateExerciseListener listener) {
+        mOnUpdateExerciseListener = listener;
+    }
+
+    public static ExerciseFragment newInstance(String data, int position) {
         ExerciseFragment exerciseFragment = new ExerciseFragment();
-        exerciseFragment.setListener(listener);
         Bundle args = new Bundle();
         args.putString("workout_name", data);
         args.putInt("position", position);
@@ -53,8 +68,7 @@ public class ExerciseFragment extends Fragment implements OnUpdateExerciseListen
         String workoutName = getArguments().getString("workout_name");
         Integer position = getArguments().getInt("position");
         mExerciseViewModel = ViewModelProviders.of(getActivity(), new ExerciseViewModel.ExerciseViewModelFactory(getActivity().getApplication(), workoutName)).get(ExerciseViewModel.class);
-        mExerciseWithSets = mExerciseViewModel.getExerciseWithSetList().getValue().get(position);
-
+        mExerciseWithSetsAndHints = mExerciseViewModel.getExerciseWithSetsAndHintsList().getValue().get(position);
         loadRecyclerView();
 
         return mBinding.getRoot();
@@ -63,67 +77,34 @@ public class ExerciseFragment extends Fragment implements OnUpdateExerciseListen
     private void loadRecyclerView() {
         mViewTypeList = new ArrayList<>();
         mTopSectionPositions = new ArrayList<>();
-        fillListsWithData(mExerciseWithSets);
+        fillListsWithData(mExerciseWithSetsAndHints);
 
-        Exercise exercise = mExerciseWithSets.exercise;
-        exercise.exerciseSetList = mExerciseWithSets.exerciseSetList;
-        ArrayList<Exercise> singleItemList = new ArrayList<>();
-        singleItemList.add(exercise);
+        ArrayList<ExercisePerformedDraft> singleItemList = new ArrayList<>();
+        singleItemList.add(getExercise());
+        ExerciseAdapter exerciseAdapter = new ExerciseAdapter(mViewTypeList, mOnUpdateExerciseListener, mTopSectionPositions, ExerciseFragment.class.getSimpleName());
+        exerciseAdapter.setExerciseDrafts(singleItemList);
 
-        ExerciseAdapter exerciseAdapter = new ExerciseAdapter(mViewTypeList, this, mTopSectionPositions);
-        exerciseAdapter.setExercises(singleItemList);
-
-
-        exerciseAdapter.setListener(mListener);
+        exerciseAdapter.setOnFocusChangeListener(mOnFocusChangeListener);
 
         mBinding.duringWorkoutExerciseList.setLayoutManager(new LinearLayoutManager(getContext()));
         mBinding.duringWorkoutExerciseList.setAdapter(exerciseAdapter);
     }
 
-    private void fillListsWithData(ExerciseWithSets exerciseWithSets) {
+    private ExercisePerformedDraft getExercise() {
+        ExercisePerformedDraft exercisePerformedDraft = mExerciseWithSetsAndHints.exercisePerformedDraft;
+        exercisePerformedDraft.exerciseSetWithHintList = mExerciseWithSetsAndHints.exerciseSetWithHintList;
+        return exercisePerformedDraft;
+    }
+
+    private void fillListsWithData(ExerciseWithSetsAndHints exerciseWithSetsAndHints) {
 
         mViewTypeList.add(ExerciseAdapter.TopSectionViewHolder.VIEW_TYPE);
 
-        for (int j = 0; j < exerciseWithSets.exerciseSetList.size(); j++) {
+        for (int j = 0; j < exerciseWithSetsAndHints.exerciseSetWithHintList.size(); j++) {
             mViewTypeList.add(ExerciseAdapter.MiddleSectionViewHolder.VIEW_TYPE);
         }
 
         mViewTypeList.add(ExerciseAdapter.BottomSectionViewHolder.VIEW_TYPE);
         mTopSectionPositions.add(0);
-    }
-
-    @Override
-    public void setName(int whichExercise, String data) {
-
-    }
-
-    @Override
-    public void setReps(int whichExercise, int whichSet, String data) {
-
-    }
-
-    @Override
-    public void setWeight(int whichExercise, int whichSet, String data) {
-
-    }
-
-    @Override
-    public void setRestTime(int whichExercise, String data) {
-
-    }
-
-    @Override
-    public void makeSuperset(int whichExercise) {
-
-    }
-
-    @Override
-    public void addSet(int whichExercise, int position) {
-
-    }
-
-    @Override
-    public boolean addExercise(int position) {
-        return false;
     }
 }

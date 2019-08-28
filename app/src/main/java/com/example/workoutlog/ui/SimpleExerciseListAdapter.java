@@ -13,18 +13,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.workoutlog.R;
 import com.example.workoutlog.databinding.SimpleExercisesListItemBinding;
 import com.example.workoutlog.model.Exercise;
+import com.example.workoutlog.model.ExercisePerformedDraft;
 
 import java.util.ArrayList;
 
 public class SimpleExerciseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private ArrayList<Exercise> mExercises;
+    private ArrayList<ExercisePerformedDraft> mExercises;
     private OnItemClickListener mListener;
 
     private boolean mHasHighlightedRow;
     private ItemViewHolder mItemViewHolder;
     private int mItemClickedPosition;
 
-    public SimpleExerciseListAdapter(ArrayList<Exercise> exercises) {
+    public SimpleExerciseListAdapter(ArrayList<ExercisePerformedDraft> exercises) {
         mExercises = exercises;
     }
 

@@ -25,6 +25,7 @@ import com.example.workoutlog.databinding.FooterExercisesListItemBinding;
 import com.example.workoutlog.databinding.MiddleSectionExercisesListItemBinding;
 import com.example.workoutlog.databinding.TopSectionExercisesListItemBinding;
 import com.example.workoutlog.model.Exercise;
+import com.example.workoutlog.model.ExercisePerformedDraft;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,11 +39,14 @@ public class ExerciseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private HashMap<EditText, CondensedTextWatcher> mHashMap;
     private View.OnFocusChangeListener mOnFocusChangeListener;
 
+    private ArrayList<ExercisePerformedDraft> mExerciseDraftList;
+    private String mClassName;
 
-    public ExerciseAdapter(ArrayList<Integer> viewTypeList, OnUpdateExerciseListener listener, ArrayList<Integer> topSectionPositions) {
+    public ExerciseAdapter(ArrayList<Integer> viewTypeList, OnUpdateExerciseListener listener, ArrayList<Integer> topSectionPositions, String className) {
         mViewTypeList = viewTypeList;
         mListener = listener;
         mTopSectionPositions = topSectionPositions;
+        mClassName = className;
     }
 
     @NonNull
@@ -81,9 +85,16 @@ public class ExerciseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private void setTopSectionViewHolderAtPosition(TopSectionViewHolder holder, int position) {
         final int whichExercise = Collections.binarySearch(mTopSectionPositions, position);
-        Exercise exercise = mExerciseList.get(whichExercise);
 
-        holder.exerciseName.setText(exercise.name);
+        if(!mClassName.equals(ExerciseFragment.class.getSimpleName())) {
+            Exercise exercise = mExerciseList.get(whichExercise);
+            holder.exerciseName.setText(exercise.name);
+        }
+
+        else {
+            ExercisePerformedDraft exercisePerformedDraft = mExerciseDraftList.get(whichExercise);
+            holder.exerciseName.setText(exercisePerformedDraft.name);
+        }
 
         if (mHashMap == null)
             mHashMap = new HashMap<>();
@@ -99,10 +110,22 @@ public class ExerciseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private void setMiddleSectionViewHolderAtPosition(MiddleSectionViewHolder holder, final int position) {
         final int whichExercise = (Collections.binarySearch(mTopSectionPositions, position) * -1) - 2 ;
-        Exercise exercise = mExerciseList.get(whichExercise);
-        holder.numSet.setText(String.valueOf(exercise.exerciseSetList.get(position - mTopSectionPositions.get(whichExercise) - 1).number));
+        if(!mClassName.equals(ExerciseFragment.class.getSimpleName())) {
+            Exercise exercise = mExerciseList.get(whichExercise);
+            holder.numSet.setText(String.valueOf(exercise.exerciseSetList.get(position - mTopSectionPositions.get(whichExercise) - 1).number));
+            holder.reps.setText(String.valueOf(exercise.exerciseSetList.get(position - mTopSectionPositions.get(whichExercise) - 1).reps));
+            holder.weight.setText(String.valueOf(exercise.exerciseSetList.get(position - mTopSectionPositions.get(whichExercise) - 1).weight));
+        }
 
-        holder.reps.setText(String.valueOf(exercise.exerciseSetList.get(position - mTopSectionPositions.get(whichExercise) - 1).reps));
+        else {
+            ExercisePerformedDraft exerciseDraft = mExerciseDraftList.get(whichExercise);
+            holder.numSet.setText(String.valueOf(exerciseDraft.exerciseSetWithHintList.get(position - mTopSectionPositions.get(whichExercise) - 1).number));
+            holder.reps.setText(String.valueOf(exerciseDraft.exerciseSetWithHintList.get(position - mTopSectionPositions.get(whichExercise) - 1).reps));
+            holder.weight.setText(String.valueOf(exerciseDraft.exerciseSetWithHintList.get(position - mTopSectionPositions.get(whichExercise) - 1).weight));
+
+            holder.reps.setHint(String.valueOf(exerciseDraft.exerciseSetWithHintList.get(position - mTopSectionPositions.get(whichExercise) - 1).repsHint));
+            holder.weight.setHint(String.valueOf(exerciseDraft.exerciseSetWithHintList.get(position - mTopSectionPositions.get(whichExercise) - 1).weightHint));
+        }
 
         if (mHashMap == null)
             mHashMap = new HashMap<>();
@@ -115,7 +138,7 @@ public class ExerciseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         });
         holder.reps.addTextChangedListener(mHashMap.get(holder.reps));
 
-        holder.weight.setText(String.valueOf(exercise.exerciseSetList.get(position - mTopSectionPositions.get(whichExercise) - 1).weight));
+        //holder.weight.setText(String.valueOf(exercise.exerciseSetList.get(position - mTopSectionPositions.get(whichExercise) - 1).weight));
         mHashMap.put(holder.weight, new CondensedTextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
@@ -139,12 +162,16 @@ public class ExerciseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    public void setListener(View.OnFocusChangeListener listener) {
+    public void setOnFocusChangeListener(View.OnFocusChangeListener listener) {
         mOnFocusChangeListener = listener;
     }
 
     public void setExercises(ArrayList<Exercise> exercises) {
         mExerciseList = exercises;
+    }
+
+    public void setExerciseDrafts(ArrayList<ExercisePerformedDraft> exerciseDrafts) {
+        mExerciseDraftList = exerciseDrafts;
     }
 
     @Override

@@ -1,8 +1,8 @@
 package com.example.workoutlog.ui;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Debug;
 import android.util.Log;
 import android.view.View;
 
@@ -12,29 +12,33 @@ import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.viewpager.widget.ViewPager;
 
 import com.example.workoutlog.R;
 import com.example.workoutlog.databinding.ActivityDuringWorkoutBinding;
 import com.example.workoutlog.model.Exercise;
+import com.example.workoutlog.model.ExercisePerformed;
+import com.example.workoutlog.model.ExercisePerformedDraft;
 import com.example.workoutlog.model.ExerciseWithSets;
+import com.example.workoutlog.model.ExerciseWithSetsAndHints;
+import com.example.workoutlog.model.WorkoutLogEntry;
 import com.example.workoutlog.viewmodel.ExerciseViewModel;
+import com.example.workoutlog.viewmodel.WorkoutLogEntryViewModel;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DuringWorkoutActivity extends AppCompatActivity implements View.OnFocusChangeListener {
+public class DuringWorkoutActivity extends AppCompatActivity implements View.OnFocusChangeListener, OnUpdateExerciseListener {
     private ActivityDuringWorkoutBinding mBinding;
     private ExerciseViewModel mExerciseViewModel;
-    private String workoutName;
     private ExerciseFragmentPagerAdapter pagerAdapter;
+    private WorkoutLogEntryViewModel mWorkoutLogEntryViewModel;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_during_workout);
-        workoutName = getIntent().getStringExtra("workoutName");
+        mExerciseViewModel = ViewModelProviders.of(this, new ExerciseViewModel.ExerciseViewModelFactory(getApplication(), getIntent().getStringExtra("workoutName"))).get(ExerciseViewModel.class);
         setUpToolbar();
         loadViewPager();
     }
@@ -61,27 +65,36 @@ public class DuringWorkoutActivity extends AppCompatActivity implements View.OnF
         });
     }
 
-    private void loadViewPager() {
-        pagerAdapter = new ExerciseFragmentPagerAdapter(getSupportFragmentManager(), workoutName, this);
-        mBinding.exerciseViewpager.setAdapter(pagerAdapter);
-
-        mExerciseViewModel = ViewModelProviders.of(this, new ExerciseViewModel.ExerciseViewModelFactory(getApplication(), workoutName)).get(ExerciseViewModel.class);
-        mExerciseViewModel.getExerciseWithSetList().observe(this, new Observer<List<ExerciseWithSets>>() {
+    private void createNewWorkoutLogEntry() {
+        mWorkoutLogEntryViewModel = ViewModelProviders.of(this).get(WorkoutLogEntryViewModel.class);
+        mWorkoutLogEntryViewModel.insertWorkoutLogEntry(new WorkoutLogEntry(), new ResponseListener() {
             @Override
-            public void onChanged(List<ExerciseWithSets> exerciseWithSets) {
-                pagerAdapter.count = exerciseWithSets.size();
-                pagerAdapter.notifyDataSetChanged();
-
-                loadRecyclerView(exerciseWithSets);
+            public void onComplete(long response) {
             }
         });
 
+
     }
 
-    private void loadRecyclerView(List<ExerciseWithSets> exerciseWithSets) {
-        ArrayList<Exercise> list = new ArrayList<>();
-        for(ExerciseWithSets ews : exerciseWithSets) {
-            list.add(ews.exercise);
+    private void loadViewPager() {
+        pagerAdapter = new ExerciseFragmentPagerAdapter(getSupportFragmentManager(), getIntent().getStringExtra("workoutName"));
+        mBinding.exerciseViewpager.setAdapter(pagerAdapter);
+
+        mExerciseViewModel.getExerciseWithSetsAndHintsList().observe(this, new Observer<List<ExerciseWithSetsAndHints>>() {
+            @Override
+            public void onChanged(List<ExerciseWithSetsAndHints> exerciseWithSetsAndHints) {
+                pagerAdapter.count = exerciseWithSetsAndHints.size();
+                pagerAdapter.notifyDataSetChanged();
+
+                loadRecyclerView(exerciseWithSetsAndHints);
+            }
+        });
+    }
+
+    private void loadRecyclerView(List<ExerciseWithSetsAndHints> exerciseWithSetsAndHints) {
+        ArrayList<ExercisePerformedDraft> list = new ArrayList<>();
+        for(ExerciseWithSetsAndHints ewsah : exerciseWithSetsAndHints) {
+            list.add(ewsah.exercisePerformedDraft);
         }
         SimpleExerciseListAdapter adapter = new SimpleExerciseListAdapter(list);
         adapter.setOnItemClickListener(new OnItemClickListener() {
@@ -98,5 +111,40 @@ public class DuringWorkoutActivity extends AppCompatActivity implements View.OnF
     public void onFocusChange(View v, boolean hasFocus) {
         BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(mBinding.bottomSheet);
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+    }
+
+    @Override
+    public void setName(int whichExercise, String data) {
+
+    }
+
+    @Override
+    public void setReps(int whichExercise, int whichSet, String data) {
+
+    }
+
+    @Override
+    public void setWeight(int whichExercise, int whichSet, String data) {
+
+    }
+
+    @Override
+    public void setRestTime(int whichExercise, String data) {
+
+    }
+
+    @Override
+    public void makeSuperset(int whichExercise) {
+
+    }
+
+    @Override
+    public void addSet(int whichExercise, int position) {
+
+    }
+
+    @Override
+    public boolean addExercise(int position) {
+        return false;
     }
 }

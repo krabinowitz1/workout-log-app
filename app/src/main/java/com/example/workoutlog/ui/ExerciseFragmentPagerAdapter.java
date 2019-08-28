@@ -11,19 +11,15 @@ public class ExerciseFragmentPagerAdapter extends FragmentPagerAdapter {
     private String workoutName;
     public int count;
 
-    View.OnFocusChangeListener listener;
-
-    public ExerciseFragmentPagerAdapter(FragmentManager fragmentManager, String data, View.OnFocusChangeListener listener) {
+    public ExerciseFragmentPagerAdapter(FragmentManager fragmentManager, String data) {
         super(fragmentManager);
         workoutName = data;
-
-        this.listener = listener;
     }
 
     @NonNull
     @Override
     public Fragment getItem(int position) {
-        return ExerciseFragment.newInstance(workoutName, position, listener);
+        return ExerciseFragment.newInstance(workoutName, position);
     }
 
     @Override

@@ -80,7 +80,7 @@ public class StartWorkoutActivity extends AppCompatActivity implements OnUpdateE
         mExerciseList = new ArrayList<>();
         mTopSectionPositions = new ArrayList<>();
 
-        mExerciseAdapter = new ExerciseAdapter(mViewTypeList, this, mTopSectionPositions);
+        mExerciseAdapter = new ExerciseAdapter(mViewTypeList, this, mTopSectionPositions, StartWorkoutActivity.class.getSimpleName());
         binding.startWorkoutExercisesList.setAdapter(mExerciseAdapter);
 
         mExerciseViewModel = ViewModelProviders.of(this, new ExerciseViewModel.ExerciseViewModelFactory(getApplication(), workoutName)).get(ExerciseViewModel.class);

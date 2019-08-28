@@ -10,8 +10,11 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.workoutlog.db.ExerciseRepository;
 import com.example.workoutlog.model.Exercise;
+import com.example.workoutlog.model.ExercisePerformed;
+import com.example.workoutlog.model.ExercisePerformedDraft;
 import com.example.workoutlog.model.ExerciseSet;
 import com.example.workoutlog.model.ExerciseWithSets;
+import com.example.workoutlog.model.ExerciseWithSetsAndHints;
 
 import java.util.List;
 
@@ -19,6 +22,7 @@ public class ExerciseViewModel extends AndroidViewModel {
 
     private ExerciseRepository mRepository;
     private LiveData<List<ExerciseWithSets>> mExerciseWithSetList;
+    private LiveData<List<ExerciseWithSetsAndHints>> mExerciseWithSetsAndHintsList;
     private LiveData<Integer> mExerciseCount;
     private String mParam;
 
@@ -26,6 +30,7 @@ public class ExerciseViewModel extends AndroidViewModel {
         super(application);
         mRepository = new ExerciseRepository(application, param);
         mExerciseWithSetList = mRepository.getExerciseWithSetsList();
+        mExerciseWithSetsAndHintsList = mRepository.getExerciseWithSetsAndHintsList();
         mExerciseCount = mRepository.getExerciseCount();
         mParam = param;
     }
@@ -33,6 +38,10 @@ public class ExerciseViewModel extends AndroidViewModel {
 
     public LiveData<List<ExerciseWithSets>> getExerciseWithSetList() {
         return mExerciseWithSetList;
+    }
+
+    public LiveData<List<ExerciseWithSetsAndHints>> getExerciseWithSetsAndHintsList() {
+        return mExerciseWithSetsAndHintsList;
     }
 
     public LiveData<Integer> getExerciseCount() {
@@ -43,13 +52,28 @@ public class ExerciseViewModel extends AndroidViewModel {
         mRepository.insertExercise(exercise);
     }
 
-    public void insertExerciseList(List<Exercise> exerciseList) {
+    public void insertExercisePerformedDraftList(List<ExercisePerformedDraft> exercisePerformedDraftList) {
+        for(ExercisePerformedDraft epd : exercisePerformedDraftList) {
+            epd.workoutName = mParam;
+        }
 
+        mRepository.insertExercisePerformedDraftList(exercisePerformedDraftList);
+    }
+
+    public void insertExerciseList(List<Exercise> exerciseList) {
         for(Exercise e : exerciseList) {
             e.workoutName = mParam;
         }
 
         mRepository.insertExerciseList(exerciseList);
+    }
+
+    public void insertExercisePerformed(ExercisePerformed exerciseLogEntry) {
+
+    }
+
+    public void insertExercisePerformedList(ExercisePerformed exerciseLogEntryList) {
+
     }
 
     public void insertExerciseSet(ExerciseSet exerciseSet) {
