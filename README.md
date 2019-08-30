@@ -1,6 +1,6 @@
 # workout-log-app
 
-This is an app that lets you create workout routines and log your training sessions.
+This is an app that lets you create workout routines and log your training sessions. It is very close to being finished!
 
 Tools used:
 
