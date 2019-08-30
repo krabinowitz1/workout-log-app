@@ -13,15 +13,9 @@ public class Exercise {
     @PrimaryKey(autoGenerate = true)
     @NonNull
     public int id;
-
     public String workoutName;
-
     public String name;
-
     public int numSets;
-
-    private static final transient String EMPTY_FIELD = " ";
-
     private static final transient int MINIMUM_SETS = 1;
 
     @Ignore

@@ -14,11 +14,8 @@ public class ExercisePerformedDraft {
     @PrimaryKey(autoGenerate = true)
     @NonNull
     public int id;
-
     public String workoutName;
-
     public String name;
-
     public int numSets;
 
     @Ignore

@@ -5,13 +5,13 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
-import com.example.workoutlog.model.WorkoutLogEntry;
+import com.example.workoutlog.model.LogEntry;
 
 @Dao
-public interface WorkoutLogEntryDao {
+public interface LogEntryDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    void insertWorkoutLogEntry(WorkoutLogEntry workoutLogEntry);
+    void insertWorkoutLogEntry(LogEntry logEntry);
 
-    @Query("DELETE FROM workout_log_entry_table")
+    @Query("DELETE FROM log_entry_table")
     void deleteAll();
 }

@@ -43,6 +43,7 @@ public interface ExerciseDao {
     @Query("SELECT * FROM exercise_table WHERE workoutName =:name")
     LiveData<List<Exercise>> getExerciseList(String name);
 
+    @Transaction
     @Query("SELECT * FROM exercise_performed_draft_table WHERE workoutName = :name")
     LiveData<List<ExerciseWithSetsAndHints>> getExercisesWithSetsAndHints(String name);
 

@@ -69,8 +69,17 @@ public class NewWorkoutActivity extends AppCompatActivity implements SaveAsDialo
 
     private void showAlertDialog() {
         FragmentManager fm = getSupportFragmentManager();
-        SaveAsDialogFragment saveasDialog = new SaveAsDialogFragment();
+        SaveAsDialogFragment saveasDialog = SaveAsDialogFragment.newInstance(getExerciseNames());
         saveasDialog.show(fm, "fragment_save_as");
+    }
+
+    private ArrayList<String> getExerciseNames() {
+        ArrayList<String> names = new ArrayList<>(exercises.size());
+        for(int i = 0; i < exercises.size(); i++) {
+            names.add(exercises.get(i).name);
+        }
+
+        return names;
     }
 
     private void loadRecyclerView() {
@@ -102,18 +111,19 @@ public class NewWorkoutActivity extends AppCompatActivity implements SaveAsDialo
     }
 
     @Override
-    public void onSaveDialog(String inputText) {
+    public void onSaveDialog(String inputText1, String inputText2) {
         Intent replyIntent = new Intent();
 
-        if(TextUtils.isEmpty(inputText)) {
+        if(TextUtils.isEmpty(inputText1)) {
             setResult(RESULT_CANCELED, replyIntent);
         }
 
         else {
             setResult(RESULT_OK, replyIntent);
-            replyIntent.putExtra("workoutName", inputText);
+            replyIntent.putExtra("workoutName", inputText1);
+            replyIntent.putExtra("workoutDescription", inputText2);
 
-            ExerciseViewModel exerciseViewModel = ViewModelProviders.of(this, new ExerciseViewModel.ExerciseViewModelFactory(getApplication(), inputText)).get(ExerciseViewModel.class);
+            ExerciseViewModel exerciseViewModel = ViewModelProviders.of(this, new ExerciseViewModel.ExerciseViewModelFactory(getApplication(), inputText1)).get(ExerciseViewModel.class);
             exerciseViewModel.insertExerciseList(exercises);
             exerciseViewModel.insertExercisePerformedDraftList(exercisePerformedDrafts);
         }

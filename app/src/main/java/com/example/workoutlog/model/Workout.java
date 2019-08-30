@@ -12,20 +12,14 @@ import java.util.List;
 public class Workout {
     @PrimaryKey
     @NonNull
-    String name;
+    public String name;
+    public String description;
 
-    @Ignore
-    List<Exercise> exercises;
-
-    public Workout(String name) {
+    public Workout(String name, String description) {
         this.name = name;
+        this.description = description;
     }
 
-    @Ignore
-    public Workout(String name, List<Exercise> exercises) {
-        this.name = name;
-        this.exercises = exercises;
-    }
 
     @NonNull
     public String getName() {
@@ -36,11 +30,5 @@ public class Workout {
         this.name = name;
     }
 
-    public List<Exercise> getExercises() {
-        return exercises;
-    }
 
-    public void setExercises(List<Exercise> exercises) {
-        this.exercises = exercises;
-    }
 }

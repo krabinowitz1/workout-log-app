@@ -49,6 +49,7 @@ public class WorkoutsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
         itemViewHolder.name.setText(workouts.get(position).getName());
+        itemViewHolder.description.setText(workouts.get(position).description);
     }
 
     @Override
@@ -62,10 +63,12 @@ public class WorkoutsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public static class ItemViewHolder extends RecyclerView.ViewHolder {
         TextView name;
+        TextView description;
 
         public ItemViewHolder(WorkoutsListItemBinding binding, final OnItemClickListener listener) {
             super(binding.getRoot());
             name = binding.tvWorkoutName;
+            description = binding.tvWorkoutDescription;
 
             binding.getRoot().setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -2,8 +2,6 @@ package com.example.workoutlog.ui;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Debug;
-import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.Nullable;
@@ -15,14 +13,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.workoutlog.R;
 import com.example.workoutlog.databinding.ActivityDuringWorkoutBinding;
-import com.example.workoutlog.model.Exercise;
-import com.example.workoutlog.model.ExercisePerformed;
 import com.example.workoutlog.model.ExercisePerformedDraft;
-import com.example.workoutlog.model.ExerciseWithSets;
 import com.example.workoutlog.model.ExerciseWithSetsAndHints;
-import com.example.workoutlog.model.WorkoutLogEntry;
+import com.example.workoutlog.model.LogEntry;
 import com.example.workoutlog.viewmodel.ExerciseViewModel;
-import com.example.workoutlog.viewmodel.WorkoutLogEntryViewModel;
+import com.example.workoutlog.viewmodel.LogEntryViewModel;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import java.util.ArrayList;
@@ -32,7 +27,7 @@ public class DuringWorkoutActivity extends AppCompatActivity implements View.OnF
     private ActivityDuringWorkoutBinding mBinding;
     private ExerciseViewModel mExerciseViewModel;
     private ExerciseFragmentPagerAdapter pagerAdapter;
-    private WorkoutLogEntryViewModel mWorkoutLogEntryViewModel;
+    private LogEntryViewModel mLogEntryViewModel;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -66,8 +61,8 @@ public class DuringWorkoutActivity extends AppCompatActivity implements View.OnF
     }
 
     private void createNewWorkoutLogEntry() {
-        mWorkoutLogEntryViewModel = ViewModelProviders.of(this).get(WorkoutLogEntryViewModel.class);
-        mWorkoutLogEntryViewModel.insertWorkoutLogEntry(new WorkoutLogEntry(), new ResponseListener() {
+        mLogEntryViewModel = ViewModelProviders.of(this).get(LogEntryViewModel.class);
+        mLogEntryViewModel.insertWorkoutLogEntry(new LogEntry(), new ResponseListener() {
             @Override
             public void onComplete(long response) {
             }

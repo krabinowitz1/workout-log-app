@@ -7,18 +7,16 @@ import androidx.annotation.NonNull;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
-import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.example.workoutlog.model.Exercise;
 import com.example.workoutlog.model.ExercisePerformedDraft;
 import com.example.workoutlog.model.ExerciseSet;
 import com.example.workoutlog.model.ExerciseSetWithHint;
+import com.example.workoutlog.model.LogEntry;
 import com.example.workoutlog.model.Workout;
-import com.example.workoutlog.model.WorkoutLogEntry;
 
-@Database(entities = {Workout.class, Exercise.class, ExercisePerformedDraft.class, ExerciseSet.class, ExerciseSetWithHint.class, WorkoutLogEntry.class}, version = 6, exportSchema = false)
-@TypeConverters({MyTypeConverters.class})
+@Database(entities = {Workout.class, Exercise.class, ExercisePerformedDraft.class, ExerciseSet.class, ExerciseSetWithHint.class, LogEntry.class}, version = 7, exportSchema = false)
 public abstract class WorkoutRoomDatabase extends RoomDatabase {
     private static volatile WorkoutRoomDatabase INSTANCE;
 
@@ -35,7 +33,7 @@ public abstract class WorkoutRoomDatabase extends RoomDatabase {
 
     public abstract WorkoutDao workoutDao();
     public abstract ExerciseDao exerciseDao();
-    public abstract WorkoutLogEntryDao workoutLogEntryDao();
+    public abstract LogEntryDao workoutLogEntryDao();
 
     private static RoomDatabase.Callback sRoomDatabaseCallback =
             new RoomDatabase.Callback(){
@@ -51,12 +49,12 @@ public abstract class WorkoutRoomDatabase extends RoomDatabase {
 
         private final WorkoutDao mWorkoutDao;
         private final ExerciseDao mExerciseDao;
-        private final WorkoutLogEntryDao mWorkoutLogEntryDao;
+        private final LogEntryDao mLogEntryDao;
 
         PopulateDbAsync(WorkoutRoomDatabase db) {
             mWorkoutDao = db.workoutDao();
             mExerciseDao = db.exerciseDao();
-            mWorkoutLogEntryDao = db.workoutLogEntryDao();
+            mLogEntryDao = db.workoutLogEntryDao();
         }
 
         @Override
@@ -64,10 +62,7 @@ public abstract class WorkoutRoomDatabase extends RoomDatabase {
             mExerciseDao.deleteAll();
             mExerciseDao.deleteAllExerciseDrafts();
             mWorkoutDao.deleteAll();
-            mWorkoutLogEntryDao.deleteAll();
-            mWorkoutDao.insertWorkout(new Workout("Workout A"));
-            mWorkoutDao.insertWorkout(new Workout("Workout B"));
-            mWorkoutDao.insertWorkout(new Workout("Workout C"));
+            mLogEntryDao.deleteAll();
             return null;
         }
     }

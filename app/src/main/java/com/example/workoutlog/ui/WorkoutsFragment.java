@@ -77,7 +77,7 @@ public class WorkoutsFragment extends Fragment implements View.OnClickListener {
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == NEW_WORKOUT_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
-            Workout workout = new Workout(data.getStringExtra("workoutName"));
+            Workout workout = new Workout(data.getStringExtra("workoutName"), data.getStringExtra("workoutDescription"));
 
             mWorkoutViewModel.insert(workout);
         }

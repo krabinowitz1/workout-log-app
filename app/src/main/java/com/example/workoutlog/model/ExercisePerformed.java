@@ -7,7 +7,6 @@ import java.util.List;
 
 public class ExercisePerformed {
     public int id;
-
     public int workoutLogId;
 
     @Ignore

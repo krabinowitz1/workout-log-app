@@ -8,13 +8,9 @@ public class ExerciseSet {
 
     @PrimaryKey(autoGenerate = true)
     public int id;
-
     public int number;
-
     public String reps;
-
     public String weight;
-
     public long exerciseId;
 
     public ExerciseSet(String reps, String weight, int number) {
