@@ -143,14 +143,12 @@ public class NewWorkoutActivity extends AppCompatActivity implements SaveAsDialo
     public void setReps(int whichExercise, int whichSet, String data) {
         exercises.get(whichExercise).exerciseSetList.get(whichSet).reps = data;
 
-
         exercisePerformedDrafts.get(whichExercise).exerciseSetWithHintList.get(whichSet).repsHint = data;
     }
 
     @Override
     public void setWeight(int whichExercise, int whichSet, String data) {
         exercises.get(whichExercise).exerciseSetList.get(whichSet).weight = data;
-
 
         exercisePerformedDrafts.get(whichExercise).exerciseSetWithHintList.get(whichSet).weightHint = data;
     }
@@ -187,8 +185,6 @@ public class NewWorkoutActivity extends AppCompatActivity implements SaveAsDialo
 
         exercisePerformedDrafts.get(whichExercise).numSets++;
         exercisePerformedDrafts.get(whichExercise).exerciseSetWithHintList.add(new ExerciseSetWithHint(EMPTY_FIELD, EMPTY_FIELD, exercises.get(whichExercise).numSets));
-        //exercises.get(whichExercise).exerciseSetWithHintList.add(new ExerciseSetWithHint(EMPTY_FIELD, EMPTY_FIELD, exercises.get(whichExercise).numSets));
-
 
         for(int i = whichExercise + 1; i < mTopSectionPositions.size(); i++) {
             mTopSectionPositions.set(i, mTopSectionPositions.get(i) + 1);
@@ -209,8 +205,7 @@ public class NewWorkoutActivity extends AppCompatActivity implements SaveAsDialo
         ExercisePerformedDraft exercisePerformedDraft = new ExercisePerformedDraft(EMPTY_FIELD, MINIMUM_SETS);
         exercisePerformedDraft.exerciseSetWithHintList.add(new ExerciseSetWithHint(EMPTY_FIELD, EMPTY_FIELD, exercise.numSets));
         exercisePerformedDrafts.add(exercisePerformedDraft);
-        //exercise.exerciseSetWithHintList.add(new ExerciseSetWithHint(EMPTY_FIELD, EMPTY_FIELD, exercise.numSets));
-        
+
 
         exercises.add(exercise);
         mTopSectionPositions.add(position);

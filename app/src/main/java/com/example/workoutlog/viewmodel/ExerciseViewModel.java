@@ -1,6 +1,7 @@
 package com.example.workoutlog.viewmodel;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -13,6 +14,7 @@ import com.example.workoutlog.model.Exercise;
 import com.example.workoutlog.model.ExercisePerformed;
 import com.example.workoutlog.model.ExercisePerformedDraft;
 import com.example.workoutlog.model.ExerciseSet;
+import com.example.workoutlog.model.ExerciseSetWithHint;
 import com.example.workoutlog.model.ExerciseWithSets;
 import com.example.workoutlog.model.ExerciseWithSetsAndHints;
 
@@ -23,7 +25,6 @@ public class ExerciseViewModel extends AndroidViewModel {
     private ExerciseRepository mRepository;
     private LiveData<List<ExerciseWithSets>> mExerciseWithSetList;
     private LiveData<List<ExerciseWithSetsAndHints>> mExerciseWithSetsAndHintsList;
-    private LiveData<Integer> mExerciseCount;
     private String mParam;
 
     public ExerciseViewModel(@NonNull Application application, String param) {
@@ -31,7 +32,6 @@ public class ExerciseViewModel extends AndroidViewModel {
         mRepository = new ExerciseRepository(application, param);
         mExerciseWithSetList = mRepository.getExerciseWithSetsList();
         mExerciseWithSetsAndHintsList = mRepository.getExerciseWithSetsAndHintsList();
-        mExerciseCount = mRepository.getExerciseCount();
         mParam = param;
     }
 
@@ -44,12 +44,12 @@ public class ExerciseViewModel extends AndroidViewModel {
         return mExerciseWithSetsAndHintsList;
     }
 
-    public LiveData<Integer> getExerciseCount() {
-        return mExerciseCount;
-    }
-
     public void insertExercise(Exercise exercise) {
         mRepository.insertExercise(exercise);
+    }
+
+    public void insertExercisePerformedDraft(ExercisePerformedDraft exercisePerformedDraft) {
+        mRepository.insertExercisePerformedDraft(exercisePerformedDraft);
     }
 
     public void insertExercisePerformedDraftList(List<ExercisePerformedDraft> exercisePerformedDraftList) {
@@ -80,8 +80,16 @@ public class ExerciseViewModel extends AndroidViewModel {
         mRepository.insertExerciseSet(exerciseSet);
     }
 
-    public void addSet(Exercise exercise) {
+    public void insertExerciseSetWithHint(ExerciseSetWithHint exerciseSetWithHint) {
+        mRepository.insertExerciseSetWithHint(exerciseSetWithHint);
+    }
+
+    public void updateExerciseNumSet(Exercise exercise) {
         mRepository.updateExercise(exercise);
+    }
+
+    public void updateExercisePerformedDraftNumSet(ExercisePerformedDraft exercisePerformedDraft) {
+        mRepository.updateExercisePerformedDraftNumSet(exercisePerformedDraft.numSets, exercisePerformedDraft.id);
     }
 
     public void updateExerciseName(Exercise exercise) {
@@ -90,6 +98,10 @@ public class ExerciseViewModel extends AndroidViewModel {
 
     public void updateExerciseSet(ExerciseSet exerciseSet) {
         mRepository.updateExerciseSet(exerciseSet);
+    }
+
+    public void updateExerciseSetWithHint(ExerciseSetWithHint exerciseSetWithHint) {
+        mRepository.updateExerciseSetWithHint(exerciseSetWithHint);
     }
 
     public static class ExerciseViewModelFactory implements ViewModelProvider.Factory {

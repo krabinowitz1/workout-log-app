@@ -28,7 +28,6 @@ public class ExerciseRepository {
         mExerciseList = mExerciseDao.getExerciseList(mParam);
         mExerciseWithSetList = mExerciseDao.getExercisesWithSets(mParam);
         mExerciseWithSetsAndHintsList = mExerciseDao.getExercisesWithSetsAndHints(mParam);
-        mExerciseCount = mExerciseDao.getExerciseCount(mParam);
     }
 
     public LiveData<List<ExerciseWithSets>> getExerciseWithSetsList() {
@@ -39,10 +38,6 @@ public class ExerciseRepository {
         return mExerciseWithSetsAndHintsList;
     }
 
-    public LiveData<Integer> getExerciseCount() {
-        return mExerciseCount;
-    }
-
     public void insertExercise(Exercise exercise) {
         new insertExerciseAsyncTask(mExerciseDao).execute(exercise);
     }
@@ -51,12 +46,16 @@ public class ExerciseRepository {
 
     }
 
-    public void insertExercisePerformedDraftList(List<ExercisePerformedDraft> exercisePerformedDraftList) {
-        new insertExercisePerformedDraftListAsyncTask(mExerciseDao).execute(exercisePerformedDraftList);
-    }
-
     public void insertExercisePerformedList(ExercisePerformed exerciseLogEntryList) {
 
+    }
+
+    public void insertExercisePerformedDraft(ExercisePerformedDraft exerciseperformedDraft) {
+        new insertExercisePerformedDraftAsyncTask(mExerciseDao).execute(exerciseperformedDraft);
+    }
+
+    public void insertExercisePerformedDraftList(List<ExercisePerformedDraft> exercisePerformedDraftList) {
+        new insertExercisePerformedDraftListAsyncTask(mExerciseDao).execute(exercisePerformedDraftList);
     }
 
     public void insertExerciseList(List<Exercise> exerciseList) {
@@ -67,6 +66,10 @@ public class ExerciseRepository {
         new insertExerciseSetTask(mExerciseDao).execute(exerciseSet);
     }
 
+    public void insertExerciseSetWithHint(ExerciseSetWithHint exerciseSetWithHint) {
+        new insertExerciseSetWithHintTask(mExerciseDao).execute(exerciseSetWithHint);
+    }
+
     public void updateExerciseName(String name, long id) {
         new updateExerciseNameAsyncTask(mExerciseDao, id).execute(name);
     }
@@ -75,8 +78,16 @@ public class ExerciseRepository {
         new updateExerciseTask(mExerciseDao).execute(exercise);
     }
 
+    public void updateExercisePerformedDraftNumSet(int num, long id) {
+        new updateExercisePerformedDraftNumSetAsyncTask(mExerciseDao, id).execute(num);
+    }
+
     public void updateExerciseSet(ExerciseSet exerciseSet) {
         new updateExerciseSetTask(mExerciseDao).execute(exerciseSet);
+    }
+
+    public void updateExerciseSetWithHint(ExerciseSetWithHint exerciseSetWithHint) {
+        new updateExerciseSetWithHintTask(mExerciseDao).execute(exerciseSetWithHint);
     }
 
     private static class insertExerciseAsyncTask extends AsyncTask<Exercise, Void, Void> {
@@ -94,6 +105,26 @@ public class ExerciseRepository {
             for(ExerciseSet eSet : exercise.exerciseSetList) {
                 eSet.exerciseId = id;
                 mAsyncTaskDao.insertExerciseSet(eSet);
+            }
+
+            return null;
+        }
+    }
+
+    private static class insertExercisePerformedDraftAsyncTask extends AsyncTask<ExercisePerformedDraft, Void, Void> {
+        private ExerciseDao mAsyncTaskDao;
+
+        insertExercisePerformedDraftAsyncTask(ExerciseDao dao) {
+            mAsyncTaskDao = dao;
+        }
+        @Override
+        protected Void doInBackground(ExercisePerformedDraft... exercisePerformedDrafts) {
+            ExercisePerformedDraft exercisePerformedDraft = exercisePerformedDrafts[0];
+            long id = mAsyncTaskDao.insertExercisePerformedDraft(exercisePerformedDraft);
+
+            for(ExerciseSetWithHint eswh : exercisePerformedDraft.exerciseSetWithHintList) {
+                eswh.exerciseId = id;
+                mAsyncTaskDao.insertExerciseSetWithHint(eswh);
             }
 
             return null;
@@ -162,6 +193,20 @@ public class ExerciseRepository {
         }
     }
 
+    private static class insertExerciseSetWithHintTask extends AsyncTask<ExerciseSetWithHint, Void, Void> {
+        private ExerciseDao mAsyncTaskDao;
+
+        insertExerciseSetWithHintTask(ExerciseDao dao) {
+            mAsyncTaskDao = dao;
+        }
+
+        @Override
+        protected Void doInBackground(ExerciseSetWithHint... exerciseSetWithHints) {
+            mAsyncTaskDao.insertExerciseSetWithHint(exerciseSetWithHints[0]);
+            return null;
+        }
+    }
+
     private static class updateExerciseTask extends AsyncTask<Exercise, Void, Void> {
         private ExerciseDao mAsyncTaskDao;
 
@@ -190,6 +235,20 @@ public class ExerciseRepository {
         }
     }
 
+    private static class updateExerciseSetWithHintTask extends AsyncTask<ExerciseSetWithHint, Void, Void> {
+        private ExerciseDao mAsyncTaskDao;
+
+        updateExerciseSetWithHintTask(ExerciseDao dao) {
+            mAsyncTaskDao = dao;
+        }
+
+        @Override
+        protected Void doInBackground(ExerciseSetWithHint... exerciseSetWithHints) {
+            mAsyncTaskDao.updateExerciseSetWithHint(exerciseSetWithHints[0]);
+            return null;
+        }
+    }
+
     private static class updateExerciseNameAsyncTask extends AsyncTask<String, Void, Void> {
         private ExerciseDao mAsyncTaskDao;
         private long id;
@@ -202,6 +261,23 @@ public class ExerciseRepository {
         @Override
         protected Void doInBackground(String... strings) {
             mAsyncTaskDao.updateExerciseName(strings[0], id);
+            return null;
+        }
+    }
+
+    private static class updateExercisePerformedDraftNumSetAsyncTask extends AsyncTask<Integer, Void, Void> {
+        private ExerciseDao mAsyncTaskDao;
+        private long id;
+
+        updateExercisePerformedDraftNumSetAsyncTask(ExerciseDao dao, long id) {
+            mAsyncTaskDao = dao;
+            this.id = id;
+        }
+
+
+        @Override
+        protected Void doInBackground(Integer... integers) {
+            mAsyncTaskDao.updateExercisePerformedDraftNumSets(integers[0], id);
             return null;
         }
     }

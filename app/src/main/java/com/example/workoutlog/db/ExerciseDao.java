@@ -36,6 +36,9 @@ public interface ExerciseDao {
     @Insert
     void insertExerciseSet(ExerciseSet exerciseSet);
 
+    @Insert
+    void insertExerciseSetWithHint(ExerciseSetWithHint exerciseSetWithHint);
+
     @Transaction
     @Query("SELECT * FROM exercise_table WHERE workoutName =:name")
     LiveData<List<ExerciseWithSets>> getExercisesWithSets(String name);
@@ -50,8 +53,8 @@ public interface ExerciseDao {
     @Query("UPDATE exercise_table SET name = :name WHERE id =:id")
     void updateExerciseName(String name, long id);
 
-    @Query("Select COUNT(*) FROM exercise_table WHERE workoutName =:name")
-    LiveData<Integer> getExerciseCount(String name);
+    @Query("UPDATE exercise_performed_draft_table SET numSets = :num WHERE id =:id")
+    void updateExercisePerformedDraftNumSets(Integer num, long id);
 
     @Query("DELETE FROM exercise_table")
     void deleteAll();
@@ -64,4 +67,7 @@ public interface ExerciseDao {
 
     @Update
     void updateExerciseSet(ExerciseSet exerciseSet);
+
+    @Update
+    void updateExerciseSetWithHint(ExerciseSetWithHint exerciseSetWithHint);
 }

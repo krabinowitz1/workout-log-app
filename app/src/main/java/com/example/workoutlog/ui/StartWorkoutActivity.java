@@ -197,10 +197,11 @@ public class StartWorkoutActivity extends AppCompatActivity implements OnUpdateE
 
         Exercise exercise = mExerciseList.get(whichExercise);
         exercise.numSets++;
-        mExerciseViewModel.addSet(exercise);
+        mExerciseViewModel.updateExerciseNumSet(exercise);
 
         ExerciseSet exerciseSet = new ExerciseSet(" ", " ", exercise.numSets);
         exerciseSet.exerciseId = exercise.getId();
+
         exercise.exerciseSetList.add(exerciseSet);
 
         for(int i = whichExercise + 1; i < mTopSectionPositions.size(); i++) {

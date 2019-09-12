@@ -2,6 +2,7 @@ package com.example.workoutlog.ui;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.Nullable;
@@ -14,6 +15,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.workoutlog.R;
 import com.example.workoutlog.databinding.ActivityDuringWorkoutBinding;
 import com.example.workoutlog.model.ExercisePerformedDraft;
+import com.example.workoutlog.model.ExerciseSet;
+import com.example.workoutlog.model.ExerciseSetWithHint;
 import com.example.workoutlog.model.ExerciseWithSetsAndHints;
 import com.example.workoutlog.model.LogEntry;
 import com.example.workoutlog.viewmodel.ExerciseViewModel;
@@ -23,11 +26,13 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DuringWorkoutActivity extends AppCompatActivity implements View.OnFocusChangeListener, OnUpdateExerciseListener {
+public class DuringWorkoutActivity extends AppCompatActivity implements View.OnFocusChangeListener, OnItemClickListener {
     private ActivityDuringWorkoutBinding mBinding;
     private ExerciseViewModel mExerciseViewModel;
     private ExerciseFragmentPagerAdapter pagerAdapter;
     private LogEntryViewModel mLogEntryViewModel;
+
+    private ArrayList<ExercisePerformedDraft> mExercisePerformedDrafts;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -87,17 +92,15 @@ public class DuringWorkoutActivity extends AppCompatActivity implements View.OnF
     }
 
     private void loadRecyclerView(List<ExerciseWithSetsAndHints> exerciseWithSetsAndHints) {
-        ArrayList<ExercisePerformedDraft> list = new ArrayList<>();
-        for(ExerciseWithSetsAndHints ewsah : exerciseWithSetsAndHints) {
-            list.add(ewsah.exercisePerformedDraft);
+        mExercisePerformedDrafts = new ArrayList<>();
+        for(int i = 0; i < exerciseWithSetsAndHints.size(); i++) {
+            mExercisePerformedDrafts.add(exerciseWithSetsAndHints.get(i).exercisePerformedDraft);
+            mExercisePerformedDrafts.get(i).exerciseSetWithHintList = exerciseWithSetsAndHints.get(i).exerciseSetWithHintList;
         }
-        SimpleExerciseListAdapter adapter = new SimpleExerciseListAdapter(list);
-        adapter.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(int position) {
-                mBinding.exerciseViewpager.setCurrentItem(position, true);
-            }
-        });
+
+        SimpleExerciseListAdapter adapter = new SimpleExerciseListAdapter(mExercisePerformedDrafts);
+        adapter.setOnItemClickListener(this);
+
         mBinding.simpleExerciseList.setLayoutManager(new LinearLayoutManager(this));
         mBinding.simpleExerciseList.setAdapter(adapter);
     }
@@ -109,37 +112,15 @@ public class DuringWorkoutActivity extends AppCompatActivity implements View.OnF
     }
 
     @Override
-    public void setName(int whichExercise, String data) {
+    public void onItemClick(int position) {
+        if (position != mExercisePerformedDrafts.size() - 1 )
+        mBinding.exerciseViewpager.setCurrentItem(position, true);
 
-    }
-
-    @Override
-    public void setReps(int whichExercise, int whichSet, String data) {
-
-    }
-
-    @Override
-    public void setWeight(int whichExercise, int whichSet, String data) {
-
-    }
-
-    @Override
-    public void setRestTime(int whichExercise, String data) {
-
-    }
-
-    @Override
-    public void makeSuperset(int whichExercise) {
-
-    }
-
-    @Override
-    public void addSet(int whichExercise, int position) {
-
-    }
-
-    @Override
-    public boolean addExercise(int position) {
-        return false;
+        else {
+            ExercisePerformedDraft exercisePerformedDraft = new ExercisePerformedDraft("", 1);
+            exercisePerformedDraft.workoutName = getIntent().getStringExtra("workoutName");
+            exercisePerformedDraft.exerciseSetWithHintList.add(new ExerciseSetWithHint("", "", 1));
+            mExerciseViewModel.insertExercisePerformedDraft(exercisePerformedDraft);
+        }
     }
 }

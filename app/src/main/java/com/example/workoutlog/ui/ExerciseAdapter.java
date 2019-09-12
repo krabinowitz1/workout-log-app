@@ -39,7 +39,7 @@ public class ExerciseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private HashMap<EditText, CondensedTextWatcher> mHashMap;
     private View.OnFocusChangeListener mOnFocusChangeListener;
 
-    private ArrayList<ExercisePerformedDraft> mExerciseDraftList;
+    private ExercisePerformedDraft mExerciseDraft;
     private String mClassName;
 
     public ExerciseAdapter(ArrayList<Integer> viewTypeList, OnUpdateExerciseListener listener, ArrayList<Integer> topSectionPositions, String className) {
@@ -92,7 +92,7 @@ public class ExerciseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
 
         else {
-            ExercisePerformedDraft exercisePerformedDraft = mExerciseDraftList.get(whichExercise);
+            ExercisePerformedDraft exercisePerformedDraft = mExerciseDraft;
             holder.exerciseName.setText(exercisePerformedDraft.name);
         }
 
@@ -118,7 +118,7 @@ public class ExerciseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
 
         else {
-            ExercisePerformedDraft exerciseDraft = mExerciseDraftList.get(whichExercise);
+            ExercisePerformedDraft exerciseDraft = mExerciseDraft;
             holder.numSet.setText(String.valueOf(exerciseDraft.exerciseSetWithHintList.get(position - mTopSectionPositions.get(whichExercise) - 1).number));
             holder.reps.setText(String.valueOf(exerciseDraft.exerciseSetWithHintList.get(position - mTopSectionPositions.get(whichExercise) - 1).reps));
             holder.weight.setText(String.valueOf(exerciseDraft.exerciseSetWithHintList.get(position - mTopSectionPositions.get(whichExercise) - 1).weight));
@@ -138,7 +138,6 @@ public class ExerciseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         });
         holder.reps.addTextChangedListener(mHashMap.get(holder.reps));
 
-        //holder.weight.setText(String.valueOf(exercise.exerciseSetList.get(position - mTopSectionPositions.get(whichExercise) - 1).weight));
         mHashMap.put(holder.weight, new CondensedTextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
@@ -170,8 +169,8 @@ public class ExerciseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         mExerciseList = exercises;
     }
 
-    public void setExerciseDrafts(ArrayList<ExercisePerformedDraft> exerciseDrafts) {
-        mExerciseDraftList = exerciseDrafts;
+    public void setExerciseDraft(ExercisePerformedDraft exercisePerformedDraft) {
+        mExerciseDraft = exercisePerformedDraft;
     }
 
     @Override

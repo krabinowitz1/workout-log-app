@@ -15,8 +15,8 @@ public class ExerciseSetWithHint {
     public long exerciseId;
 
     public ExerciseSetWithHint(String reps, String weight, int number) {
-        this.reps = reps;
-        this.weight = weight;
+        this.reps = repsHint = reps;
+        this.weight = weightHint = weight;
         this.number = number;
     }
 }
