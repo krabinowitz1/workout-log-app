@@ -45,7 +45,7 @@
         <LinearLayout
             android:id="@+id/bottom_sheet"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="wrap_content"
             android:background="@color/white"
             android:orientation="vertical"
             app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
@@ -62,6 +62,7 @@
                 android:elevation="4dp">
 
                 <TextView
+                    android:id="@+id/bottom_sheet_header"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="0/8 exercises completed"

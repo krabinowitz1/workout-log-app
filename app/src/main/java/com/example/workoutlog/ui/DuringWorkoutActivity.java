@@ -30,8 +30,8 @@ public class DuringWorkoutActivity extends AppCompatActivity implements View.OnF
     private ActivityDuringWorkoutBinding mBinding;
     private ExerciseViewModel mExerciseViewModel;
     private ExerciseFragmentPagerAdapter pagerAdapter;
+    private SimpleExerciseListAdapter mSimpleAdapter;
     private LogEntryViewModel mLogEntryViewModel;
-
     private ArrayList<ExercisePerformedDraft> mExercisePerformedDrafts;
 
     @Override
@@ -78,6 +78,7 @@ public class DuringWorkoutActivity extends AppCompatActivity implements View.OnF
 
     private void loadViewPager() {
         pagerAdapter = new ExerciseFragmentPagerAdapter(getSupportFragmentManager(), getIntent().getStringExtra("workoutName"));
+        mSimpleAdapter = new SimpleExerciseListAdapter();
         mBinding.exerciseViewpager.setAdapter(pagerAdapter);
 
         mExerciseViewModel.getExerciseWithSetsAndHintsList().observe(this, new Observer<List<ExerciseWithSetsAndHints>>() {
@@ -98,11 +99,12 @@ public class DuringWorkoutActivity extends AppCompatActivity implements View.OnF
             mExercisePerformedDrafts.get(i).exerciseSetWithHintList = exerciseWithSetsAndHints.get(i).exerciseSetWithHintList;
         }
 
-        SimpleExerciseListAdapter adapter = new SimpleExerciseListAdapter(mExercisePerformedDrafts);
-        adapter.setOnItemClickListener(this);
+        mSimpleAdapter.setOnItemClickListener(this);
+        mSimpleAdapter.setExercises(mExercisePerformedDrafts);
 
+        mBinding.bottomSheetHeader.setText("0/" + mExercisePerformedDrafts.size() + " exercises completed");
         mBinding.simpleExerciseList.setLayoutManager(new LinearLayoutManager(this));
-        mBinding.simpleExerciseList.setAdapter(adapter);
+        mBinding.simpleExerciseList.setAdapter(mSimpleAdapter);
     }
 
     @Override
@@ -113,7 +115,7 @@ public class DuringWorkoutActivity extends AppCompatActivity implements View.OnF
 
     @Override
     public void onItemClick(int position) {
-        if (position != mExercisePerformedDrafts.size() - 1 )
+        if (position < mExercisePerformedDrafts.size())
         mBinding.exerciseViewpager.setCurrentItem(position, true);
 
         else {

@@ -20,7 +20,6 @@ public class ExerciseRepository {
     private LiveData<List<Exercise>> mExerciseList;
     private LiveData<List<ExerciseWithSets>> mExerciseWithSetList;
     private LiveData<List<ExerciseWithSetsAndHints>> mExerciseWithSetsAndHintsList;
-    private LiveData<Integer> mExerciseCount;
 
     public ExerciseRepository(Application application, String mParam) {
         WorkoutRoomDatabase db = WorkoutRoomDatabase.getDatabase(application);

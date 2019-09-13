@@ -1,9 +1,11 @@
 package com.example.workoutlog.ui;
 
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -12,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.workoutlog.R;
 import com.example.workoutlog.databinding.SimpleExercisesListItemBinding;
-import com.example.workoutlog.model.Exercise;
 import com.example.workoutlog.model.ExercisePerformedDraft;
 
 import java.util.ArrayList;
@@ -21,11 +22,10 @@ public class SimpleExerciseListAdapter extends RecyclerView.Adapter<RecyclerView
     private ArrayList<ExercisePerformedDraft> mExercises;
     private OnItemClickListener mListener;
 
-    private boolean mHasHighlightedRow;
     private ItemViewHolder mItemViewHolder;
     private int mItemClickedPosition;
 
-    public SimpleExerciseListAdapter(ArrayList<ExercisePerformedDraft> exercises) {
+    public void setExercises(ArrayList<ExercisePerformedDraft> exercises) {
         mExercises = exercises;
     }
 
@@ -35,12 +35,6 @@ public class SimpleExerciseListAdapter extends RecyclerView.Adapter<RecyclerView
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         SimpleExercisesListItemBinding binding = DataBindingUtil.inflate(inflater, R.layout.simple_exercises_list_item, parent, false);
         SimpleExerciseListAdapter.ItemViewHolder holder = new SimpleExerciseListAdapter.ItemViewHolder(binding, mListener);
-        if(!mHasHighlightedRow) {
-            mItemClickedPosition = 0;
-            mItemViewHolder = holder;
-            holder.binding.getRoot().setBackgroundColor(Color.parseColor("#fff9c0"));
-            mHasHighlightedRow = true;
-        }
         return holder;
     }
 
@@ -51,13 +45,26 @@ public class SimpleExerciseListAdapter extends RecyclerView.Adapter<RecyclerView
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
-        itemViewHolder.name.setText(mExercises.get(position).name);
+        if(position == mItemClickedPosition) {
+            itemViewHolder.binding.getRoot().setBackgroundColor(Color.parseColor("#fff9c0"));
+            mItemViewHolder = itemViewHolder;
+        }
+        else
+            itemViewHolder.binding.getRoot().setBackgroundColor(Color.WHITE);
+
+        if (position < mExercises.size())
+            itemViewHolder.name.setText(mExercises.get(position).name);
+
+        else {
+            itemViewHolder.name.setText("Add an exercise");
+            itemViewHolder.icon.setVisibility(View.GONE);
+        }
     }
 
     @Override
     public int getItemCount() {
         if(mExercises != null)
-            return mExercises.size();
+            return mExercises.size() + 1;
 
         else
             return 0;
@@ -66,11 +73,13 @@ public class SimpleExerciseListAdapter extends RecyclerView.Adapter<RecyclerView
     public class ItemViewHolder extends RecyclerView.ViewHolder {
         TextView name;
         SimpleExercisesListItemBinding binding;
+        ImageView icon;
 
         public ItemViewHolder(final SimpleExercisesListItemBinding binding, final OnItemClickListener listener) {
             super(binding.getRoot());
             this.binding = binding;
             name = binding.simpleExerciseName;
+            icon = binding.checkCircleIcon;
 
             binding.getRoot().setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -78,12 +87,13 @@ public class SimpleExerciseListAdapter extends RecyclerView.Adapter<RecyclerView
                     if(listener != null) {
                         int position = getAdapterPosition();
                         if(position != RecyclerView.NO_POSITION) {
-                            if(position != mItemClickedPosition) {
+                            if(position != mItemClickedPosition && position < mExercises.size()) {
                                 mItemViewHolder.binding.getRoot().setBackgroundColor(Color.WHITE);
                                 binding.getRoot().setBackgroundColor(Color.parseColor("#fff9c0"));
                                 mItemViewHolder = ItemViewHolder.this;
                                 mItemClickedPosition = position;
                             }
+
                             listener.onItemClick(position);
                         }
                     }
