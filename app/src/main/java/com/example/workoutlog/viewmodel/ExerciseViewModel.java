@@ -1,7 +1,6 @@
 package com.example.workoutlog.viewmodel;
 
 import android.app.Application;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -54,7 +53,7 @@ public class ExerciseViewModel extends AndroidViewModel {
 
     public void insertExercisePerformedDraftList(List<ExercisePerformedDraft> exercisePerformedDraftList) {
         for(ExercisePerformedDraft epd : exercisePerformedDraftList) {
-            epd.workoutName = mParam;
+            epd.setWorkoutName(mParam);
         }
 
         mRepository.insertExercisePerformedDraftList(exercisePerformedDraftList);
@@ -62,7 +61,7 @@ public class ExerciseViewModel extends AndroidViewModel {
 
     public void insertExerciseList(List<Exercise> exerciseList) {
         for(Exercise e : exerciseList) {
-            e.workoutName = mParam;
+            e.setWorkoutName(mParam);
         }
 
         mRepository.insertExerciseList(exerciseList);
@@ -89,11 +88,11 @@ public class ExerciseViewModel extends AndroidViewModel {
     }
 
     public void updateExercisePerformedDraftNumSet(ExercisePerformedDraft exercisePerformedDraft) {
-        mRepository.updateExercisePerformedDraftNumSet(exercisePerformedDraft.numSets, exercisePerformedDraft.id);
+        mRepository.updateExercisePerformedDraftNumSet(exercisePerformedDraft.getNumSets(), exercisePerformedDraft.getId());
     }
 
     public void updateExerciseName(Exercise exercise) {
-        mRepository.updateExerciseName(exercise.name, exercise.getId());
+        mRepository.updateExerciseName(exercise.getName(), exercise.getId());
     }
 
     public void updateExerciseSet(ExerciseSet exerciseSet) {

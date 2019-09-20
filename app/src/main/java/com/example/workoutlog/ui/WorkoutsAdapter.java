@@ -49,7 +49,7 @@ public class WorkoutsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
         itemViewHolder.name.setText(workouts.get(position).getName());
-        itemViewHolder.description.setText(workouts.get(position).description);
+        itemViewHolder.description.setText(workouts.get(position).getDescription());
     }
 
     @Override

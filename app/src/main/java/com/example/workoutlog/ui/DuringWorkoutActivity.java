@@ -2,7 +2,6 @@ package com.example.workoutlog.ui;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.Nullable;
@@ -15,7 +14,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.workoutlog.R;
 import com.example.workoutlog.databinding.ActivityDuringWorkoutBinding;
 import com.example.workoutlog.model.ExercisePerformedDraft;
-import com.example.workoutlog.model.ExerciseSet;
 import com.example.workoutlog.model.ExerciseSetWithHint;
 import com.example.workoutlog.model.ExerciseWithSetsAndHints;
 import com.example.workoutlog.model.LogEntry;
@@ -120,7 +118,7 @@ public class DuringWorkoutActivity extends AppCompatActivity implements View.OnF
 
         else {
             ExercisePerformedDraft exercisePerformedDraft = new ExercisePerformedDraft("", 1);
-            exercisePerformedDraft.workoutName = getIntent().getStringExtra("workoutName");
+            exercisePerformedDraft.setWorkoutName(getIntent().getStringExtra("workoutName"));
             exercisePerformedDraft.exerciseSetWithHintList.add(new ExerciseSetWithHint("", "", 1));
             mExerciseViewModel.insertExercisePerformedDraft(exercisePerformedDraft);
         }

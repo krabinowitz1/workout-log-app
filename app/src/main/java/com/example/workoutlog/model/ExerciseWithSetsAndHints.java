@@ -11,4 +11,12 @@ public class ExerciseWithSetsAndHints {
 
     @Relation(parentColumn = "id", entityColumn = "exerciseId")
     public List<ExerciseSetWithHint> exerciseSetWithHintList;
+
+    public ExercisePerformedDraft getExercisePerformedDraft() {
+        return exercisePerformedDraft;
+    }
+
+    public List<ExerciseSetWithHint> getExerciseSetWithHintList() {
+        return exerciseSetWithHintList;
+    }
 }

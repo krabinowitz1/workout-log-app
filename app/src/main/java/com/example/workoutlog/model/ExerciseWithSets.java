@@ -11,4 +11,12 @@ public class ExerciseWithSets {
 
     @Relation(parentColumn = "id", entityColumn = "exerciseId")
     public List<ExerciseSet> exerciseSetList;
+
+    public Exercise getExercise() {
+        return exercise;
+    }
+
+    public List<ExerciseSet> getExerciseSetList() {
+        return exerciseSetList;
+    }
 }

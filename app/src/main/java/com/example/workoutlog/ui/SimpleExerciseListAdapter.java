@@ -1,7 +1,6 @@
 package com.example.workoutlog.ui;
 
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,7 +52,7 @@ public class SimpleExerciseListAdapter extends RecyclerView.Adapter<RecyclerView
             itemViewHolder.binding.getRoot().setBackgroundColor(Color.WHITE);
 
         if (position < mExercises.size())
-            itemViewHolder.name.setText(mExercises.get(position).name);
+            itemViewHolder.name.setText(mExercises.get(position).getName());
 
         else {
             itemViewHolder.name.setText("Add an exercise");

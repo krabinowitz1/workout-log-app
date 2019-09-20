@@ -101,8 +101,8 @@ public class ExerciseRepository {
             Exercise exercise = exercises[0];
             long id = mAsyncTaskDao.insertExercise(exercise);
 
-            for(ExerciseSet eSet : exercise.exerciseSetList) {
-                eSet.exerciseId = id;
+            for(ExerciseSet eSet : exercise.getExerciseSetList()) {
+                eSet.setExerciseId(id);
                 mAsyncTaskDao.insertExerciseSet(eSet);
             }
 
@@ -122,7 +122,7 @@ public class ExerciseRepository {
             long id = mAsyncTaskDao.insertExercisePerformedDraft(exercisePerformedDraft);
 
             for(ExerciseSetWithHint eswh : exercisePerformedDraft.exerciseSetWithHintList) {
-                eswh.exerciseId = id;
+                eswh.setExerciseId(id);
                 mAsyncTaskDao.insertExerciseSetWithHint(eswh);
             }
 
@@ -144,10 +144,10 @@ public class ExerciseRepository {
             for(ExercisePerformedDraft epd : list) {
                 long id = mAsyncTaskDao.insertExercisePerformedDraft(epd);
 
-                for (ExerciseSetWithHint eswh : epd.exerciseSetWithHintList) {
-                    eswh.exerciseId = id;
+                for (ExerciseSetWithHint eswh : epd.getExerciseSetWithHintList()) {
+                    eswh.setExerciseId(id);
                 }
-                mAsyncTaskDao.insertExerciseSetWithHintList(epd.exerciseSetWithHintList);
+                mAsyncTaskDao.insertExerciseSetWithHintList(epd.getExerciseSetWithHintList());
             }
 
             return null;
@@ -167,11 +167,11 @@ public class ExerciseRepository {
             for(Exercise e : list) {
                 long id = mAsyncTaskDao.insertExercise(e);
 
-                for(ExerciseSet exerciseSet : e.exerciseSetList) {
-                    exerciseSet.exerciseId = id;
+                for(ExerciseSet exerciseSet : e.getExerciseSetList()) {
+                    exerciseSet.setExerciseId(id);
                 }
 
-                mAsyncTaskDao.insertExerciseSetList(e.exerciseSetList);
+                mAsyncTaskDao.insertExerciseSetList(e.getExerciseSetList());
             }
 
             return null;

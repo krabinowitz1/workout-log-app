@@ -3,7 +3,6 @@ package com.example.workoutlog.ui;
 import android.content.Context;
 import android.os.Build;
 import android.text.Editable;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -88,12 +87,12 @@ public class ExerciseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         if(!mClassName.equals(ExerciseFragment.class.getSimpleName())) {
             Exercise exercise = mExerciseList.get(whichExercise);
-            holder.exerciseName.setText(exercise.name);
+            holder.exerciseName.setText(exercise.getName());
         }
 
         else {
             ExercisePerformedDraft exercisePerformedDraft = mExerciseDraft;
-            holder.exerciseName.setText(exercisePerformedDraft.name);
+            holder.exerciseName.setText(exercisePerformedDraft.getName());
         }
 
         if (mHashMap == null)
@@ -112,19 +111,19 @@ public class ExerciseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         final int whichExercise = (Collections.binarySearch(mTopSectionPositions, position) * -1) - 2 ;
         if(!mClassName.equals(ExerciseFragment.class.getSimpleName())) {
             Exercise exercise = mExerciseList.get(whichExercise);
-            holder.numSet.setText(String.valueOf(exercise.exerciseSetList.get(position - mTopSectionPositions.get(whichExercise) - 1).number));
-            holder.reps.setText(String.valueOf(exercise.exerciseSetList.get(position - mTopSectionPositions.get(whichExercise) - 1).reps));
-            holder.weight.setText(String.valueOf(exercise.exerciseSetList.get(position - mTopSectionPositions.get(whichExercise) - 1).weight));
+            holder.numSet.setText(String.valueOf(exercise.getExerciseSetList().get(position - mTopSectionPositions.get(whichExercise) - 1).getNumber()));
+            holder.reps.setText(String.valueOf(exercise.getExerciseSetList().get(position - mTopSectionPositions.get(whichExercise) - 1).getReps()));
+            holder.weight.setText(String.valueOf(exercise.getExerciseSetList().get(position - mTopSectionPositions.get(whichExercise) - 1).getWeight()));
         }
 
         else {
             ExercisePerformedDraft exerciseDraft = mExerciseDraft;
-            holder.numSet.setText(String.valueOf(exerciseDraft.exerciseSetWithHintList.get(position - mTopSectionPositions.get(whichExercise) - 1).number));
-            holder.reps.setText(String.valueOf(exerciseDraft.exerciseSetWithHintList.get(position - mTopSectionPositions.get(whichExercise) - 1).reps));
-            holder.weight.setText(String.valueOf(exerciseDraft.exerciseSetWithHintList.get(position - mTopSectionPositions.get(whichExercise) - 1).weight));
+            holder.numSet.setText(String.valueOf(exerciseDraft.exerciseSetWithHintList.get(position - mTopSectionPositions.get(whichExercise) - 1).getNumber()));
+            holder.reps.setText(String.valueOf(exerciseDraft.exerciseSetWithHintList.get(position - mTopSectionPositions.get(whichExercise) - 1).getReps()));
+            holder.weight.setText(String.valueOf(exerciseDraft.exerciseSetWithHintList.get(position - mTopSectionPositions.get(whichExercise) - 1).getWeight()));
 
-            holder.reps.setHint(String.valueOf(exerciseDraft.exerciseSetWithHintList.get(position - mTopSectionPositions.get(whichExercise) - 1).repsHint));
-            holder.weight.setHint(String.valueOf(exerciseDraft.exerciseSetWithHintList.get(position - mTopSectionPositions.get(whichExercise) - 1).weightHint));
+            holder.reps.setHint(String.valueOf(exerciseDraft.exerciseSetWithHintList.get(position - mTopSectionPositions.get(whichExercise) - 1).getRepsHint()));
+            holder.weight.setHint(String.valueOf(exerciseDraft.exerciseSetWithHintList.get(position - mTopSectionPositions.get(whichExercise) - 1).getWeightHint()));
         }
 
         if (mHashMap == null)

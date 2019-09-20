@@ -12,8 +12,8 @@ import java.util.List;
 public class Workout {
     @PrimaryKey
     @NonNull
-    public String name;
-    public String description;
+    private String name;
+    private String description;
 
     public Workout(String name, String description) {
         this.name = name;
@@ -30,5 +30,8 @@ public class Workout {
         this.name = name;
     }
 
+    public String getDescription() {
+        return description;
+    }
 
 }

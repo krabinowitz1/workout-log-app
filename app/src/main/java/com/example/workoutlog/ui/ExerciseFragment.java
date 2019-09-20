@@ -2,7 +2,6 @@ package com.example.workoutlog.ui;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -96,14 +95,14 @@ public class ExerciseFragment extends Fragment implements OnUpdateExerciseListen
 
     private ExercisePerformedDraft getExercise() {
         ExercisePerformedDraft exercisePerformedDraft = mExerciseWithSetsAndHintsList.get(pos).exercisePerformedDraft;
-        exercisePerformedDraft.exerciseSetWithHintList = mExerciseWithSetsAndHintsList.get(pos).exerciseSetWithHintList;
+        exercisePerformedDraft.setExerciseSetWithHintList( mExerciseWithSetsAndHintsList.get(pos).getExerciseSetWithHintList());
         return exercisePerformedDraft;
     }
 
     private void fillListsWithData(ExerciseWithSetsAndHints exerciseWithSetsAndHints) {
         mViewTypeList.add(ExerciseAdapter.TopSectionViewHolder.VIEW_TYPE);
 
-        for (int j = 0; j < exerciseWithSetsAndHints.exerciseSetWithHintList.size(); j++) {
+        for (int j = 0; j < exerciseWithSetsAndHints.getExerciseSetWithHintList().size(); j++) {
             mViewTypeList.add(ExerciseAdapter.MiddleSectionViewHolder.VIEW_TYPE);
         }
 
@@ -118,14 +117,14 @@ public class ExerciseFragment extends Fragment implements OnUpdateExerciseListen
 
     @Override
     public void setReps(int whichExercise, int whichSet, String data) {
-        mExerciseWithSetsAndHintsList.get(whichExercise).exerciseSetWithHintList.get(whichSet).reps = data;
-        mExerciseViewModel.updateExerciseSetWithHint(mExerciseWithSetsAndHintsList.get(whichExercise).exerciseSetWithHintList.get(whichSet));
+        mExerciseWithSetsAndHintsList.get(whichExercise).getExerciseSetWithHintList().get(whichSet).setReps(data);
+        mExerciseViewModel.updateExerciseSetWithHint(mExerciseWithSetsAndHintsList.get(whichExercise).getExerciseSetWithHintList().get(whichSet));
     }
 
     @Override
     public void setWeight(int whichExercise, int whichSet, String data) {
-        mExerciseWithSetsAndHintsList.get(whichExercise).exerciseSetWithHintList.get(whichSet).weight = data;
-        mExerciseViewModel.updateExerciseSetWithHint(mExerciseWithSetsAndHintsList.get(whichExercise).exerciseSetWithHintList.get(whichSet));
+        mExerciseWithSetsAndHintsList.get(whichExercise).getExerciseSetWithHintList().get(whichSet).setWeight(data);
+        mExerciseViewModel.updateExerciseSetWithHint(mExerciseWithSetsAndHintsList.get(whichExercise).getExerciseSetWithHintList().get(whichSet));
     }
 
     @Override
@@ -141,11 +140,11 @@ public class ExerciseFragment extends Fragment implements OnUpdateExerciseListen
     @Override
     public void addSet(int whichExercise, int position) {
         ExercisePerformedDraft exercisePerformedDraft = getExercise();
-        exercisePerformedDraft.numSets++;
+        exercisePerformedDraft.setNumSets(exercisePerformedDraft.getNumSets() + 1);
         mExerciseViewModel.updateExercisePerformedDraftNumSet(exercisePerformedDraft);
-        ExerciseSetWithHint exerciseSetWithHint = new ExerciseSetWithHint("", "", exercisePerformedDraft.numSets);
-        exerciseSetWithHint.exerciseId = exercisePerformedDraft.id;
-        exercisePerformedDraft.exerciseSetWithHintList.add(exerciseSetWithHint);
+        ExerciseSetWithHint exerciseSetWithHint = new ExerciseSetWithHint("", "", exercisePerformedDraft.getNumSets());
+        exerciseSetWithHint.setExerciseId(exercisePerformedDraft.getId());
+        exercisePerformedDraft.getExerciseSetWithHintList().add(exerciseSetWithHint);
         mExerciseViewModel.insertExerciseSetWithHint(exerciseSetWithHint);
         mViewTypeList.add(position, ExerciseAdapter.MiddleSectionViewHolder.VIEW_TYPE);
         mAdapter.notifyDataSetChanged();

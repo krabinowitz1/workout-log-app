@@ -7,15 +7,55 @@ import androidx.room.PrimaryKey;
 public class ExerciseSet {
 
     @PrimaryKey(autoGenerate = true)
-    public int id;
-    public int number;
-    public String reps;
-    public String weight;
-    public long exerciseId;
+    private int id;
+    private int number;
+    private String reps;
+    private String weight;
+    private long exerciseId;
 
     public ExerciseSet(String reps, String weight, int number) {
-        this.reps = reps;
-        this.weight = weight;
+        this.setReps(reps);
+        this.setWeight(weight);
+        this.setNumber(number);
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getNumber() {
+        return number;
+    }
+
+    private void setNumber(int number) {
         this.number = number;
+    }
+
+    public String getReps() {
+        return reps;
+    }
+
+    public void setReps(String reps) {
+        this.reps = reps;
+    }
+
+    public String getWeight() {
+        return weight;
+    }
+
+    public void setWeight(String weight) {
+        this.weight = weight;
+    }
+
+    public void setExerciseId(long exerciseId) {
+        this.exerciseId = exerciseId;
+    }
+
+    public long getExerciseId() {
+        return exerciseId;
     }
 }

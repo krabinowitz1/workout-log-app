@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
@@ -29,13 +28,13 @@ public class StartWorkoutActivity extends AppCompatActivity implements OnUpdateE
     private ActivityStartWorkoutBinding binding;
     private ExerciseViewModel mExerciseViewModel;
     private String workoutName;
-
     private boolean shouldNotifyAdapter;
-
     private ExerciseAdapter mExerciseAdapter;
     private ArrayList<Integer> mViewTypeList;
     private ArrayList<Integer> mTopSectionPositions;
     private ArrayList<Exercise> mExerciseList;
+
+    private static final String EMPTY_FIELD = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,8 +92,8 @@ public class StartWorkoutActivity extends AppCompatActivity implements OnUpdateE
                 mExerciseList.clear();
 
                 for(int i = 0; i < exerciseWithSets.size(); i++) {
-                    mExerciseList.add(exerciseWithSets.get(i).exercise);
-                    mExerciseList.get(i).exerciseSetList = exerciseWithSets.get(i).exerciseSetList;
+                    mExerciseList.add(exerciseWithSets.get(i).getExercise());
+                    mExerciseList.get(i).setExerciseSetList(exerciseWithSets.get(i).getExerciseSetList());
                 }
 
                 mExerciseAdapter.setExercises(mExerciseList);
@@ -111,7 +110,7 @@ public class StartWorkoutActivity extends AppCompatActivity implements OnUpdateE
             mViewTypeList.add(ExerciseAdapter.TopSectionViewHolder.VIEW_TYPE);
             mTopSectionPositions.add(viewTypePosition++);
 
-            for (int j = 0; j < exerciseWithSets.get(i).exerciseSetList.size(); j++) {
+            for (int j = 0; j < exerciseWithSets.get(i).getExerciseSetList().size(); j++) {
                 mViewTypeList.add(ExerciseAdapter.MiddleSectionViewHolder.VIEW_TYPE);
                 viewTypePosition++;
             }
@@ -142,7 +141,7 @@ public class StartWorkoutActivity extends AppCompatActivity implements OnUpdateE
         setShouldNotifyAdapter(false);
 
         Exercise exercise = mExerciseList.get(whichExercise);
-        exercise.name = data;
+        exercise.setName(data);
         mExerciseViewModel.updateExerciseName(exercise);
     }
 
@@ -151,9 +150,8 @@ public class StartWorkoutActivity extends AppCompatActivity implements OnUpdateE
         setShouldNotifyAdapter(false);
 
         Exercise exercise = mExerciseList.get(whichExercise);
-        exercise.exerciseSetList.get(whichSet).reps = data;
-
-        mExerciseViewModel.updateExerciseSet(exercise.exerciseSetList.get(whichSet));
+        exercise.getExerciseSetList().get(whichSet).setReps(data);
+        mExerciseViewModel.updateExerciseSet(exercise.getExerciseSetList().get(whichSet));
     }
 
     @Override
@@ -161,10 +159,8 @@ public class StartWorkoutActivity extends AppCompatActivity implements OnUpdateE
         setShouldNotifyAdapter(false);
 
         Exercise exercise = mExerciseList.get(whichExercise);
-        exercise.exerciseSetList.get(whichSet).weight = data;
-
-
-        mExerciseViewModel.updateExerciseSet(exercise.exerciseSetList.get(whichSet));
+        exercise.getExerciseSetList().get(whichSet).setWeight(data);
+        mExerciseViewModel.updateExerciseSet(exercise.getExerciseSetList().get(whichSet));
     }
 
     @Override
@@ -176,8 +172,8 @@ public class StartWorkoutActivity extends AppCompatActivity implements OnUpdateE
     public void makeSuperset(int whichExercise) {
         ArrayList<String> exerciseNames = new ArrayList<>();
         for(int i = 0; i < mExerciseList.size(); i++) {
-            String s = mExerciseList.get(i).name;
-            if(s.equals("") )
+            String s = mExerciseList.get(i).getName();
+            if(s.equals(EMPTY_FIELD) )
                 exerciseNames.add("unnamed exercise");
 
             else
@@ -196,13 +192,13 @@ public class StartWorkoutActivity extends AppCompatActivity implements OnUpdateE
         setShouldNotifyAdapter(true);
 
         Exercise exercise = mExerciseList.get(whichExercise);
-        exercise.numSets++;
+        exercise.setNumSets(exercise.getNumSets() + 1);
         mExerciseViewModel.updateExerciseNumSet(exercise);
 
-        ExerciseSet exerciseSet = new ExerciseSet(" ", " ", exercise.numSets);
-        exerciseSet.exerciseId = exercise.getId();
+        ExerciseSet exerciseSet = new ExerciseSet(EMPTY_FIELD, EMPTY_FIELD, exercise.getNumSets());
+        exerciseSet.setExerciseId(exercise.getId());
 
-        exercise.exerciseSetList.add(exerciseSet);
+        exercise.getExerciseSetList().add(exerciseSet);
 
         for(int i = whichExercise + 1; i < mTopSectionPositions.size(); i++) {
             mTopSectionPositions.set(i, mTopSectionPositions.get(i) + 1);
@@ -217,9 +213,9 @@ public class StartWorkoutActivity extends AppCompatActivity implements OnUpdateE
     public boolean addExercise(int position) {
         setShouldNotifyAdapter(true);
 
-        Exercise exercise = new Exercise("");
-        exercise.workoutName = workoutName;
-        exercise.exerciseSetList.add(new ExerciseSet(" ", " ", exercise.numSets));
+        Exercise exercise = new Exercise(EMPTY_FIELD);
+        exercise.setWorkoutName(workoutName);
+        exercise.getExerciseSetList().add(new ExerciseSet(" ", " ", exercise.getNumSets()));
         mExerciseList.add(exercise);
 
         mTopSectionPositions.add(position);

@@ -12,14 +12,14 @@ import java.util.List;
 public class Exercise {
     @PrimaryKey(autoGenerate = true)
     @NonNull
-    public int id;
-    public String workoutName;
-    public String name;
-    public int numSets;
+    private int id;
+    private String workoutName;
+    private String name;
+    private int numSets;
     private static final transient int MINIMUM_SETS = 1;
 
     @Ignore
-    public List<ExerciseSet> exerciseSetList;
+    private List<ExerciseSet> exerciseSetList;
 
     public Exercise(String name) {
         this.name = name;
@@ -41,6 +41,30 @@ public class Exercise {
 
     public void setWorkoutName(String workoutName) {
         this.workoutName = workoutName;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getNumSets() {
+        return numSets;
+    }
+
+    public void setNumSets(int numSets) {
+        this.numSets = numSets;
+    }
+
+    public void setExerciseSetList(List<ExerciseSet> exerciseSetList) {
+        this.exerciseSetList = exerciseSetList;
+    }
+
+    public List<ExerciseSet> getExerciseSetList() {
+        return exerciseSetList;
     }
 }
 
